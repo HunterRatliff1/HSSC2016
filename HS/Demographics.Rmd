@@ -1,0 +1,279 @@
+---
+title: "High School Demographics"
+author: "Hunter Ratliff, @HunterRatliff1"
+date: "July 28, 2016"
+output: 
+  html_document:
+    theme: united
+    highlight: zenburn
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+---
+
+**Source Code:** Github:
+[HunterRatliff1/        ](https://github.com/HunterRatliff1/    )  
+**Published to:** `NA`   
+**Author:** `Hunter Ratliff` @[HunterRatliff1](https://twitter.com/HunterRatliff1)  
+
+
+
+
+```{r global_options, include=FALSE}
+require(knitr)
+
+## Sets output for figures
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Demographics/',
+                      echo=FALSE, warning=FALSE, message=FALSE, fig.align='center')
+```
+
+
+```{r load_data}
+require(rio)
+require(dplyr)
+require(tidyr)
+require(stringr)
+require(ggplot2)
+require(googlesheets)
+require(ggthemes)
+require(scales)
+
+Test.Pre <- import("Data/Pre/Test.csv", setclass="tbl_df")
+Test.Post <- import("Data/Post/Test.csv", setclass="tbl_df")
+Dems <- import("Data/Pre/Survey.RDS")
+
+theme_ <- theme_fivethirtyeight() + theme(axis.title=element_text()) 
+```
+
+# Pre-Test Questions
+
+```{r Fig01, fig.width=6, fig.height=4, fig.cap='Figure 01'}
+# Density + Histogram of percentage correct
+Test.Pre %>% 
+  group_by(SID) %>%
+  summarise(Score = sum(isCorrect)/n()) %>%
+  ggplot(aes(x=Score)) +
+  geom_histogram(aes(y=..density..), binwidth=0.06, alpha=0.75) +
+  geom_density() + 
+  scale_x_continuous(labels=percent) + 
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(y="", title="Pre-Test Score Distribution")
+```
+
+```{r Fig02a, fig.cap='Figure 2A'}
+# Question Distribution (bars)
+Test.Pre %>% ggplot(aes(x=QID, fill=Score)) +
+  geom_bar(position="fill") + 
+  scale_fill_fivethirtyeight(name="") +
+  scale_y_continuous(labels=percent, name="Percentage of Responses") +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(x="", title="Question Distribution :: Pre-Test")
+```
+```{r Fig02b, fig.cap='Figure 2B'}
+## Facet by topic
+last_plot() + facet_wrap("Topic", scales="free") + 
+  labs(title="Question Distribution :: Pre-Test (Facet by Topic)")
+```
+
+# Self-Identified Variables
+
+A few lines about methods can go here... Shouldn't be that complicated or long
+
+## [Q16] Languages Spoken at Home
+
+Students listed the languages spoken in their home in decreasing order of 
+frequency. From these responses, five language variables were calculated: 
+
+* <b>ML</b> - Multilingual household
+* <b>PHLOTE</b> - Primary home language other than english
+* <b>NES</b> - Non-english speaker, meaning meaning english is *not* spoken at all
+* <b>L1</b> - Primary language
+* <b>L2</b> - Secondary language
+
+```{r Fig03, fig.width=8, fig.height=5, fig.cap='Figure 3'}
+df.lang <- Dems %>% count(ML, PHLOTE) %>%
+  filter(!is.na(ML)) 
+
+df.lang %>%
+  ggplot(aes(x=PHLOTE, y=n, fill=ML, label=str_c(n, " students "))) + 
+  geom_bar(stat="identity") +
+  geom_text(stat="identity", position = "stack", size=5,
+            color="white", vjust=0, hjust=1) +  coord_flip() +
+  scale_fill_stata(name="Multilingual (ML)") +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(x="Primary Home Language Other Than English\n(PHLOTE)", 
+       y="Number of Students",
+       title="Languages Spoken at Home")
+```
+
+This can also be expressed in percentage format:
+
++ Households that **only** speak english: 
+<code>`r percent(filter(df.lang, !ML, !PHLOTE)$n / sum(df.lang$n))`</code>
++ Households that **don't** speak english whatsoever: 
+<code>`r percent(filter(df.lang, !ML, PHLOTE)$n / sum(df.lang$n))`</code>
++ Households that speak **more than one language**: 
+<code>`r percent(sum(filter(df.lang, ML)$n) / sum(df.lang$n))`</code> 
+(with <code>`r percent(sum(filter(df.lang, PHLOTE, ML)) / sum(filter(df.lang, ML)$n))`</code> of these households having a PHLOTE)
+
+## [Q17] Gender Identification
+
+Students were asked to select one or more boxes describing their gender 
+identification. The options the were provided are as follows: **Female**, 
+**Male**, and/or **I'd prefer not answer**. Additionally, students were allowed 
+to write in their own responses. For the purpose of analysis, all respponses  
+other than male or female have been categorized as **Other**.
+
+```{r Fig05, fig.width=8, fig.height=5, fig.cap='Figure 5'}
+Dems %>% count(Gender, GradeLvl, sort=T) %>% 
+  filter(!is.na(GradeLvl)) %>%
+  ggplot(aes(x=GradeLvl, y=n, fill=Gender)) + 
+  geom_bar(stat="identity") + #coord_flip() + 
+  scale_fill_wsj(name="Grade Level") +
+  theme_ + labs(subtitle="High School (2016)", y="Number of Students") +
+  labs(title="Students by Gender ID & Grade")
+```
+  
+## [Q18] Race/Ethnicity Identification
+
+Students were asked to select one or more boxes describing their racial/
+ethnic identification among the options **White**, **Hispanic or Latina/o**, 
+**Asian**, **American Indian or Alaska Native**, and **Native Hawaiian or Other 
+Pacific Islander**. Similar to the Gender identification question, respondants 
+also were given the option to write-in responses or select **I'd prefer not 
+answer**. Given the survey's limitations on this question (e.g. combining the 
+ethnicity question with the race question, the social construction of race)
+these data were simplified into simple factors using the following heuristic:
+
+  1. If the Hispanic/Latina ethnicity was selected, the response was 
+     categorized as `Hispanic (any combo)` regardless of race
+  2. If white, black, or Asian was the only response given, the response was 
+     categorized as `White alone`, `Black alone`, or `Asian alone`
+  3. All other responses (including write-ins) were aggregated into `Other/2+ 
+     Race ID`
+
+The detailed Race/Ethnicity ID data are available in the "Demographics" table
+
+```{r Fig06, fig.width=7, fig.height=4, fig.cap='Figure 6'}
+# counts by gender & race
+Dems %>% count(Race, Gender, sort=T) %>% 
+  ggplot(aes(x=Race, y=n, fill=Gender, label=str_c(n, " "))) + 
+  geom_bar(stat="identity") + 
+    geom_text(stat="identity", position = "stack", size=5,
+            color="white", vjust=.5, hjust=1) +  coord_flip() +
+  coord_flip() + 
+  scale_fill_fivethirtyeight() +
+  theme_ + labs(subtitle="High School (2016)", y="Number of Students") +
+  labs(title="Students by race & gender ID")
+```
+
+# Socioeconomic Indicator
+
+```{r Fig07, fig.cap='Figure 7'}
+Dems %>% ggplot(aes(x=EO.sum, fill=Edu)) + 
+  geom_histogram(binwidth=1, color="black") +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(title="Students by EO Indicator & Parents Edu") 
+```
+
+```{r Fig08, fig.width=6, fig.height=4, fig.cap='Figure 8'}
+Dems %>% ggplot(aes(x=EO.sum, y=Score, color=GradeLvl)) +
+  geom_jitter() + scale_y_continuous(labels=percent) +
+  scale_x_sqrt() + #guides(color=guide_legend(nrow=2)) +
+  scale_color_economist(name="Grade Level") +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(title="Pre-Test Scores by sum of EO Indicator") 
+```
+
+# Pre & Post Test Scores
+
+Among our Short-term Outcomes
+**Objective:** Through content-rich questions on pre-and post-tests, 85% of
+students will demonstrate knowedge gained - thus improved academic readiness.
+**Objective:** Through content-rich questions on pre-and post-tests, 85% of
+students will demonstrate increased science knowledge and preparedness for 
+health professions.
+
+```{r Fig09, fig.cap='Figure 9'}
+Dems %>% ggplot(aes(x=Edu, y=Score)) +
+  geom_violin(aes(fill=Edu)) +
+  geom_jitter(alpha=0.5) +
+  geom_boxplot(alpha=0.25, fill="white") +
+  scale_y_continuous(labels=percent) +
+  guides(fill=F) + coord_flip() +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(title="Pre-Test Scores by Parents Edu")
+```
+
+```{r Fig10a, fig.cap='Figure 10A'}
+Dems %>% mutate(delta = Score2 - Score) %>% 
+  ggplot() + geom_density(aes(x=Score), fill="grey") +
+  geom_density(aes(x=Score2), fill="red", alpha=.5) +
+  scale_x_continuous(labels=percent) +
+  # guides(fill=F) + coord_flip() +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(title="Pre-Test & Post-Test Scores")
+```
+
+```{r Fig10b, fig.cap='Figure 10B'}
+last_plot() + facet_wrap("Edu")
+```  
+  
+```{r Fig11a, fig.cap='Figure 11a'}
+Dems %>% 
+  filter(!is.na(Edu), !is.na(GradeLvl)) %>%
+  ggplot(aes(x=Edu, y=Score, color=Edu, linetype=Gender)) +
+  geom_curve(aes(y=Score, yend=Score2, xend=Edu), position="jitter",
+              curvature = -0.1, arrow = arrow(length = unit(0.3,"cm"))) +
+  scale_y_continuous(labels=percent) + coord_flip() +
+  guides(color=F) +#guide_legend(nrow=2)) +
+  # scale_color_brewer(name="Parent's Education", palette = "Spectral") +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(title="∆ Test Scores by Parents Educational Attainment")   
+```
+
+```{r Fig11b, fig.cap='Figure 11B'}
+last_plot() + facet_grid(GradeLvl~Race)
+# Dems %>% 
+#   filter(!is.na(Edu)) %>%
+#   ggplot(aes(x=Race, y=Score, color=Edu)) +
+#   geom_curve(aes(y=Score, yend=Score2, xend=Race), position="jitter",
+#               curvature = -0.1, arrow = arrow(length = unit(0.3,"cm"))) +
+#   scale_y_continuous(labels=percent) + coord_flip() +
+#   # guides(color=F) +#guide_legend(nrow=2)) +
+#   scale_color_brewer(name="Edu", palette = "Dark2") +
+#   theme_ + labs(subtitle="High School (2016)") +
+#   labs(title="∆ Test Scores by Parents Educational Attainment")   +
+#   facet_grid(GradeLvl ~ Race)
+```
+# License
+
+```
+--- LICENSE ---
+
+Copyright (C) 2016 Hunter Ratliff
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+```
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+In the spirit of [Reproducible Research](https://cran.r-project.org/web/views/ReproducibleResearch.html),
+below is the information About the R Session at the time it was compiled:
+
+```{r Session_info, echo=TRUE, collapse=TRUE}
+devtools::session_info()
+```
+

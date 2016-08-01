@@ -1,0 +1,169 @@
+---
+title: "Pre & Post Tests"
+author: "Hunter Ratliff, @HunterRatliff1"
+date: "August 1, 2016"
+output: 
+  html_document:
+    theme: united
+    highlight: zenburn
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+---
+
+**Source Code:** Github:
+[HunterRatliff1/        ](https://github.com/HunterRatliff1/    )  
+**Published to:** `NA`   
+**Author:** `Hunter Ratliff` @[HunterRatliff1](https://twitter.com/HunterRatliff1)  
+
+
+
+
+```{r global_options, include=FALSE}
+require(knitr)
+
+## Sets output for figures
+knitr::opts_chunk$set(fig.width=8, fig.height=6, fig.path='TestResults/',
+                      echo=FALSE, warning=FALSE, message=FALSE, fig.align='center')
+```
+
+
+```{r load_data}
+require(rio)
+require(dplyr)
+require(tidyr)
+require(stringr)
+require(ggplot2)
+require(ggthemes)
+require(scales)
+
+Test.Pre <- import("Data/Pre/Test.csv", setclass="tbl_df")
+Test.Post <- import("Data/Post/Test.csv", setclass="tbl_df")
+Dems <- import("Data/Pre/Survey.RDS")
+
+theme_ <- theme_fivethirtyeight() + theme(axis.title=element_text()) 
+```
+
+# Pre-Test Questions
+
+```{r Fig01, fig.width=6, fig.height=4, fig.cap='Figure 01'}
+# Density + Histogram of percentage correct
+Test.Pre %>% 
+  group_by(SID) %>%
+  summarise(Score = sum(isCorrect)/n()) %>%
+  ggplot(aes(x=Score)) +
+  geom_histogram(aes(y=..density..), binwidth=0.06, alpha=0.75) +
+  geom_density() + 
+  scale_x_continuous(labels=percent) + 
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(y="", title="Pre-Test Score Distribution")
+```
+
+```{r Fig02a, fig.cap='Figure 2A'}
+# Question Distribution (bars)
+Test.Pre %>% ggplot(aes(x=QID, fill=Score)) +
+  geom_bar(position="fill") + 
+  scale_fill_fivethirtyeight(name="") +
+  scale_y_continuous(labels=percent, name="Percentage of Responses") +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(x="", title="Question Distribution :: Pre-Test")
+```
+```{r Fig02b, fig.cap='Figure 2B'}
+## Facet by topic
+last_plot() + facet_wrap("Topic", scales="free") + 
+  labs(title="Question Distribution :: Pre-Test (Facet by Topic)")
+```
+
+
+# Pre & Post Test Scores
+
+Among our Short-term Outcomes
+**Objective:** Through content-rich questions on pre-and post-tests, 85% of
+students will demonstrate knowedge gained - thus improved academic readiness.
+**Objective:** Through content-rich questions on pre-and post-tests, 85% of
+students will demonstrate increased science knowledge and preparedness for 
+health professions.
+
+```{r Fig09, fig.width=12, fig.height=8, fig.cap='Figure 9'}
+Dems %>% ggplot(aes(x=Edu, y=Score)) +
+  geom_violin(aes(fill=Edu)) +
+  geom_jitter(alpha=0.5) +
+  geom_boxplot(alpha=0.25, fill="white") +
+  scale_y_continuous(labels=percent) +
+  guides(fill=F) + coord_flip() +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(title="Pre-Test Scores by Parents Edu")
+```
+
+```{r Fig10a, fig.width=12, fig.height=8, fig.cap='Figure 10A'}
+Dems %>% mutate(delta = Score2 - Score) %>% 
+  ggplot() + geom_density(aes(x=Score), fill="grey") +
+  geom_density(aes(x=Score2), fill="red", alpha=.5) +
+  scale_x_continuous(labels=percent) +
+  # guides(fill=F) + coord_flip() +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(title="Pre-Test & Post-Test Scores")
+```
+
+```{r Fig10b, fig.width=12, fig.height=8, fig.cap='Figure 10B'}
+last_plot() + facet_wrap("Edu")
+```  
+  
+```{r Fig11a, fig.width=12, fig.height=8, fig.cap='Figure 11a'}
+Dems %>% 
+  filter(!is.na(Edu), !is.na(GradeLvl)) %>%
+  ggplot(aes(x=Edu, y=Score, color=Edu, linetype=Gender)) +
+  geom_curve(aes(y=Score, yend=Score2, xend=Edu), position="jitter",
+              curvature = -0.1, arrow = arrow(length = unit(0.3,"cm"))) +
+  scale_y_continuous(labels=percent) + coord_flip() +
+  guides(color=F) +#guide_legend(nrow=2)) +
+  # scale_color_brewer(name="Parent's Education", palette = "Spectral") +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(title="∆ Test Scores by Parents Educational Attainment")   
+```
+
+```{r Fig11b, fig.width=12, fig.height=8, fig.cap='Figure 11B'}
+last_plot() + facet_grid(GradeLvl~Race)
+# Dems %>% 
+#   filter(!is.na(Edu)) %>%
+#   ggplot(aes(x=Race, y=Score, color=Edu)) +
+#   geom_curve(aes(y=Score, yend=Score2, xend=Race), position="jitter",
+#               curvature = -0.1, arrow = arrow(length = unit(0.3,"cm"))) +
+#   scale_y_continuous(labels=percent) + coord_flip() +
+#   # guides(color=F) +#guide_legend(nrow=2)) +
+#   scale_color_brewer(name="Edu", palette = "Dark2") +
+#   theme_ + labs(subtitle="High School (2016)") +
+#   labs(title="∆ Test Scores by Parents Educational Attainment")   +
+#   facet_grid(GradeLvl ~ Race)
+```
+# License
+
+```
+--- LICENSE ---
+
+Copyright (C) 2016 Hunter Ratliff
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+```
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+In the spirit of [Reproducible Research](https://cran.r-project.org/web/views/ReproducibleResearch.html),
+below is the information About the R Session at the time it was compiled:
+
+```{r Session_info, echo=TRUE, collapse=TRUE}
+devtools::session_info()
+```
+
