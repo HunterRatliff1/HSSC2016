@@ -1,7 +1,7 @@
 ---
 title: "High School Demographics"
 author: "Hunter Ratliff, @HunterRatliff1"
-date: "July 28, 2016"
+date: "August 1, 2016"
 output: 
   html_document:
     theme: united
@@ -13,8 +13,8 @@ output:
 ---
 
 **Source Code:** Github:
-[HunterRatliff1/        ](https://github.com/HunterRatliff1/    )  
-**Published to:** `NA`   
+[HunterRatliff1/HSSC2016](https://github.com/HunterRatliff1/HSSC2016)  
+**Published to:** [RPubs](http://rpubs.com/HunterRatliff1/DMS_HS_2016)   
 **Author:** `Hunter Ratliff` @[HunterRatliff1](https://twitter.com/HunterRatliff1)  
 
 
@@ -38,49 +38,76 @@ require(ggplot2)
 require(googlesheets)
 require(ggthemes)
 require(scales)
+require(formattable)
 
 Test.Pre <- import("Data/Pre/Test.csv", setclass="tbl_df")
 Test.Post <- import("Data/Post/Test.csv", setclass="tbl_df")
+AP <- import("Data/AP.csv", setclass="tbl_df")
 Dems <- import("Data/Pre/Survey.RDS")
+
 
 theme_ <- theme_fivethirtyeight() + theme(axis.title=element_text()) 
 ```
 
-# Pre-Test Questions
+Although the High School camp had 100 registered students, a few were absent on
+either/both the first or the last day. For this reason, our dataset only 
+contains <code>`r nrow(Dems)`</code> observations (i.e. students). 
 
-```{r Fig01, fig.width=6, fig.height=4, fig.cap='Figure 01'}
-# Density + Histogram of percentage correct
-Test.Pre %>% 
-  group_by(SID) %>%
-  summarise(Score = sum(isCorrect)/n()) %>%
-  ggplot(aes(x=Score)) +
-  geom_histogram(aes(y=..density..), binwidth=0.06, alpha=0.75) +
-  geom_density() + 
-  scale_x_continuous(labels=percent) + 
+# District, School, & Grade
+
+Students came from <code>`r nrow(count(Dems, School))`</code> schools in
+<code>`r nrow(count(Dems, District))`</code> districts. The majority of students
+were in 11th grade, as depicted below:
+
+```{r Fig01a, fig.width=12, fig.height=10, fig.cap='Figure 01A'}
+Dems %>%
+  mutate(School = str_replace(School, "(HS)|(SFYWL)|(CP)", "")) %>%
+  mutate(School = str_replace(School, "The", "")) %>%
+  mutate(School = str_replace(School, "School", "")) %>%
+  mutate(School = str_replace(School, " ", "\n")) %>%
+  filter(School!="Kippe") %>%
+  count(District, School, GradeLvl) %>%
+  ggplot(aes(x=School, y=n, fill=GradeLvl)) + geom_bar(stat="identity") +
+  facet_wrap("District", scales="free_x") + 
   theme_ + labs(subtitle="High School (2016)") +
-  labs(y="", title="Pre-Test Score Distribution")
+  theme(axis.text.x=element_text(angle = 45),
+        strip.background=element_rect(fill="#D2D2D2")) + 
+  scale_fill_economist(name="Grade Level") +
+  labs(x="", y="", title="Number of Students by School, Grade Level") 
 ```
 
-```{r Fig02a, fig.cap='Figure 2A'}
-# Question Distribution (bars)
-Test.Pre %>% ggplot(aes(x=QID, fill=Score)) +
-  geom_bar(position="fill") + 
-  scale_fill_fivethirtyeight(name="") +
-  scale_y_continuous(labels=percent, name="Percentage of Responses") +
+This may appear decieving, because it's not clear that the majority of students came from AISD. This, however, is not the case:
+
+```{r Fig01b, fig.width=8, fig.height=6, fig.cap='Figure 01B'}
+Dems %>%
+  count(District, GradeLvl) %>%
+  ggplot(aes(x=District, y=n, fill=GradeLvl)) + 
+  geom_bar(stat="identity") + coord_flip() +
   theme_ + labs(subtitle="High School (2016)") +
-  labs(x="", title="Question Distribution :: Pre-Test")
+  scale_fill_economist(name="Grade Level") +
+  labs(x="", y="", title="Number of Students by School District") 
 ```
-```{r Fig02b, fig.cap='Figure 2B'}
-## Facet by topic
-last_plot() + facet_wrap("Topic", scales="free") + 
-  labs(title="Question Distribution :: Pre-Test (Facet by Topic)")
+
+```{r Fig01c, fig.width=12, fig.height=10, fig.cap='Figure 01C'}
+Dems %>%
+  mutate(School = str_replace(School, "(HS)|(SFYWL)|(CP)", "")) %>%
+  mutate(School = str_replace(School, "The", "")) %>%
+  mutate(School = str_replace(School, "School", "")) %>%
+  filter(School!="Kippe") %>%
+  count(District, School, GradeLvl) %>%
+  ggplot(aes(x=School, y=n, fill=District)) + geom_bar(stat="identity") +
+  coord_flip() +
+  theme_ + labs(subtitle="High School (2016)") +
+  scale_fill_brewer(palette = "Dark2") +
+  labs(x="", y="", title="Number of Students by School, School District") 
 ```
+
 
 # Self-Identified Variables
 
 A few lines about methods can go here... Shouldn't be that complicated or long
 
-## [Q16] Languages Spoken at Home
+## Languages Spoken at Home
 
 Students listed the languages spoken in their home in decreasing order of 
 frequency. From these responses, five language variables were calculated: 
@@ -91,7 +118,7 @@ frequency. From these responses, five language variables were calculated:
 * <b>L1</b> - Primary language
 * <b>L2</b> - Secondary language
 
-```{r Fig03, fig.width=8, fig.height=5, fig.cap='Figure 3'}
+```{r Fig02, fig.width=8, fig.height=5, fig.cap='Figure 2'}
 df.lang <- Dems %>% count(ML, PHLOTE) %>%
   filter(!is.na(ML)) 
 
@@ -100,7 +127,7 @@ df.lang %>%
   geom_bar(stat="identity") +
   geom_text(stat="identity", position = "stack", size=5,
             color="white", vjust=0, hjust=1) +  coord_flip() +
-  scale_fill_stata(name="Multilingual (ML)") +
+  scale_fill_pander(name="Multilingual (ML)") +
   theme_ + labs(subtitle="High School (2016)") +
   labs(x="Primary Home Language Other Than English\n(PHLOTE)", 
        y="Number of Students",
@@ -117,7 +144,7 @@ This can also be expressed in percentage format:
 <code>`r percent(sum(filter(df.lang, ML)$n) / sum(df.lang$n))`</code> 
 (with <code>`r percent(sum(filter(df.lang, PHLOTE, ML)) / sum(filter(df.lang, ML)$n))`</code> of these households having a PHLOTE)
 
-## [Q17] Gender Identification
+## Gender Identification
 
 Students were asked to select one or more boxes describing their gender 
 identification. The options the were provided are as follows: **Female**, 
@@ -125,17 +152,17 @@ identification. The options the were provided are as follows: **Female**,
 to write in their own responses. For the purpose of analysis, all respponses  
 other than male or female have been categorized as **Other**.
 
-```{r Fig05, fig.width=8, fig.height=5, fig.cap='Figure 5'}
+```{r Fig03, fig.width=8, fig.height=5, fig.cap='Figure 3'}
 Dems %>% count(Gender, GradeLvl, sort=T) %>% 
   filter(!is.na(GradeLvl)) %>%
   ggplot(aes(x=GradeLvl, y=n, fill=Gender)) + 
   geom_bar(stat="identity") + #coord_flip() + 
-  scale_fill_wsj(name="Grade Level") +
+  scale_fill_wsj(name="Gender self-identification") +
   theme_ + labs(subtitle="High School (2016)", y="Number of Students") +
   labs(title="Students by Gender ID & Grade")
 ```
   
-## [Q18] Race/Ethnicity Identification
+## Race/Ethnicity Identification
 
 Students were asked to select one or more boxes describing their racial/
 ethnic identification among the options **White**, **Hispanic or Latina/o**, 
@@ -155,20 +182,150 @@ these data were simplified into simple factors using the following heuristic:
 
 The detailed Race/Ethnicity ID data are available in the "Demographics" table
 
-```{r Fig06, fig.width=7, fig.height=4, fig.cap='Figure 6'}
+```{r Fig04, fig.width=7, fig.height=4, fig.cap='Figure 4'}
 # counts by gender & race
 Dems %>% count(Race, Gender, sort=T) %>% 
   ggplot(aes(x=Race, y=n, fill=Gender, label=str_c(n, " "))) + 
   geom_bar(stat="identity") + 
     geom_text(stat="identity", position = "stack", size=5,
             color="white", vjust=.5, hjust=1) +  coord_flip() +
-  coord_flip() + 
-  scale_fill_fivethirtyeight() +
+  coord_flip() + scale_fill_wsj(name="Gender self-identification") +
   theme_ + labs(subtitle="High School (2016)", y="Number of Students") +
   labs(title="Students by race & gender ID")
 ```
 
 # Socioeconomic Indicator
+
+Most measurements of socioeconomic status (SES) fall in to two categories: Proxy 
+and composite measurements. **Proxy measures** measure only one dimension of SES,
+such as income, wealth, occupation, or educational attainment. They are most
+useful when the proxy is highly conserved, meaning that they explain a high
+degree of the variance in other dimensions of socioeconomic status or social
+mobility. Proxy measures are useful in their simplicity, but often fail to
+account for the full scope of  SES. **Composite indicators** factor in multiple
+variables that influence SES by assigning weights to each dimension. This
+provides a more comprehensive indicator and simplifies multidimensional measures
+into a single ranking system.
+
+We estimated students SES by asking about their parents' **educational
+attainment** and **occupation**. We gathered these measurements for both parents,
+and by doing so could deduce other useful indicators (e.g. single parent
+households) for further consideration. 
+
+## Educational Attainment
+
+A common proxy for SES is the educational attainment of a students' parents
+([Oakes][Oakes]). Educational attainment is of praticular interest for us because of the
+camp's aims, so this proxy will serve as one of our primary indicators. Students
+were asked to identify the attainment of both parents individually, by selecting
+one of the following seven options and/or writing in their own response: 
+
+1. Some high school
+2. High school graduate
+3. Some college
+4. Associate degree
+5. Bachelor’s degree
+6. Post graduate degree
+7. Doctoral degree
+
+A fair number of students chose to write in responses indicating less than *Some
+high school* (e.g. elementery school, middle school, third grade), so an 
+additional *Primary Education only* category was added in order to capture these
+students.
+
+```{r Fig05a, fig.width=8, fig.height=5, fig.cap='Figure 5A'}
+Dems %>% count(Edu, PHLOTE) %>%
+  ggplot(aes(x=Edu, y=n, fill=PHLOTE)) + 
+  geom_bar(stat="identity", color="black") +
+  scale_fill_fivethirtyeight(name="Primary Home Language Other Than English") +
+  scale_x_discrete(label=function(x) str_replace_all(x, " ", "\n")) +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(x="", y="Number of Students", 
+       title="Students by Parent's Educational Attainment") 
+```
+
+Comparing that to the 2014 census' [estimations][Travis Edu] of Travis County,
+you'll see we're pretty spot on: 
+
+```{r Fig05b, fig.width=8, fig.height=5, fig.cap='Figure 5B'}
+edu.levels.census <- c("Less than\n9th grade", "9th to 12th,\nno diploma", 
+        "High school\ngraduate", "Some college,\nno degree",
+        "Associate\ndegree", "Bachelor’s\ndegree", 
+        "Graduate or\nprofessional degree")
+data_frame(
+  edu=factor(edu.levels.census, levels=edu.levels.census, ordered=T),
+  u = c(6.7, 5.9, 17.1, 19.7, 5.5, 28.6, 16.5),
+  moe=c(0.3, 0.2,  0.4,  0.4, 0.2,  0.4,  0.4)) %>%
+  mutate(u=u/100, moe=moe/100) %>%
+  ggplot(aes(x=edu, y=u)) + 
+  geom_bar(stat="identity", color="black") +
+  # scale_fill_fivethirtyeight(name="Primary Home Language Other Than English") +
+  scale_y_continuous(labels=percent) +
+  theme_ + labs(subtitle="Source: 2010-2014 American Community Survey") +
+  labs(x="", y="Population 25 year and over", 
+       title="Educational Attainment in Travis County") 
+rm(edu.levels.census)
+```
+
+More importantly, we ought to consider that traditional applicants to medical
+school are disproportionally from families with high educational attainment and
+not relective of the general population. On account of this fact, it makes more
+sense to adopt a better measure of SES than education alone.
+
+## EO Scale
+
+The *Association of American Medical Colleges* (AAMC) measues SES with a
+two-factor indicator comprising of the highest education (**E**) and occupation 
+(**O**) of either parent. This scale categorizes students into five categories
+(EO-1 to EO-5) and has been demonstrated to be a robust method of identifying
+students from a socioeconomically disadvantaged background (Grbic et al., 2015; 
+PMID: [25629949][25629949]). More information about AAMC's methodology can be
+[found here][EO scale], but the basic methodology is summariezed well in the 
+picture below:
+
+![][EO Visual]
+
+We implimented a similar classification scheme, with a few minor adjustments.
+First, unlike AAMC, we considered household with only one parent present. 
+Additionally, if a student left the occupation blank AND the educational
+attainment was a *Bachelor’s degree*, we assigned a EO-score of `2.5`. This 
+seemed to be a fair compromise in order to avoid discarding these students'
+responses and this adjustment only had an effect on two students once the other
+parent's education + occupation was considered.
+
+```{r Fig06a, fig.width=8, fig.height=5, fig.cap='Figure 6A'}
+Dems %>% count(EO=str_c("EO-",floor(EO)), Gender) %>%
+  ggplot(aes(x=EO, y=n, fill=Gender)) + 
+  geom_bar(stat="identity", color="black") +
+  scale_fill_wsj(name="Gender self-identification") +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(x="", y="Number of Students", 
+       title="Gender breakdown by EO-Level") 
+```
+
+Now compare that to the 2012 AMCAS applicant pool:
+
+```{r Fig06b, fig.width=8, fig.height=5, fig.cap='Figure 6B'}
+EOs <- c("EO-1", "EO-2", "EO-3", "EO-4", "EO-5")
+data_frame(EO=factor(EOs, levels=EOs, ordered=T),
+           n =c(20.4, 7.8, 19.0, 16.8, 24.8)) %>%
+  mutate(n=n/100) %>%
+
+# Dems %>% count(EO=str_c("EO-",floor(EO)), Gender) %>%
+  ggplot(aes(x=EO, y=n)) + 
+  geom_bar(stat="identity", color="black") + theme_ + 
+  labs(x="", y="Percentage of Applicants", subtitle="Source: AAMC",
+       title="AMCAS applicants by EO-Level (2012)")
+rm(EOs)
+```
+
+## Proprietary Scale
+
+**To do:**
+
++ Explain what it is
++ Why it's useful
++ Limitations
 
 ```{r Fig07, fig.cap='Figure 7'}
 Dems %>% ggplot(aes(x=EO.sum, fill=Edu)) + 
@@ -177,76 +334,176 @@ Dems %>% ggplot(aes(x=EO.sum, fill=Edu)) +
   labs(title="Students by EO Indicator & Parents Edu") 
 ```
 
-```{r Fig08, fig.width=6, fig.height=4, fig.cap='Figure 8'}
-Dems %>% ggplot(aes(x=EO.sum, y=Score, color=GradeLvl)) +
-  geom_jitter() + scale_y_continuous(labels=percent) +
-  scale_x_sqrt() + #guides(color=guide_legend(nrow=2)) +
-  scale_color_economist(name="Grade Level") +
-  theme_ + labs(subtitle="High School (2016)") +
-  labs(title="Pre-Test Scores by sum of EO Indicator") 
-```
+# AP Coursework
 
-# Pre & Post Test Scores
+**To do:**
 
-Among our Short-term Outcomes
-**Objective:** Through content-rich questions on pre-and post-tests, 85% of
-students will demonstrate knowedge gained - thus improved academic readiness.
-**Objective:** Through content-rich questions on pre-and post-tests, 85% of
-students will demonstrate increased science knowledge and preparedness for 
-health professions.
++ What was measured
+    + Types of classes
+    + Taken/Planned
++ How it is presented
+    + Percentage of students by course
+    + Number of courses by student
++ Limitations of inference
 
-```{r Fig09, fig.cap='Figure 9'}
-Dems %>% ggplot(aes(x=Edu, y=Score)) +
-  geom_violin(aes(fill=Edu)) +
-  geom_jitter(alpha=0.5) +
-  geom_boxplot(alpha=0.25, fill="white") +
+## By Course
+
+```{r Fig08, fig.width=8, fig.height=5, fig.cap='Figure 8'}
+AP %>% 
+  left_join(select(Dems, SID, GradeLvl, School, District, Gender, Race)) %>%
+  rename(Course=AP) %>% filter(!is.na(GradeLvl)) %>%
+  group_by(Course, GradeLvl) %>% 
+  summarise(Have = sum(Have)/n(), Plan = sum(Plan)/n(), n=n()) %>%
+  ggplot(aes(x=Course, y=Have, fill=GradeLvl)) + 
+  geom_bar(stat="identity", position="dodge", color="black") +
+  geom_bar(stat="identity", position="dodge", alpha=0.33, aes(y=Plan)) +
+  theme_ + labs(subtitle=str_c("Darker bars = Have already taken",
+                               "Lighter bars = Plan to take",
+                               "High School (2016)", sep = "   ...   ")) +
+  scale_fill_economist(name="Grade Level") +
   scale_y_continuous(labels=percent) +
-  guides(fill=F) + coord_flip() +
-  theme_ + labs(subtitle="High School (2016)") +
-  labs(title="Pre-Test Scores by Parents Edu")
+  labs(x="", y="", title="AP Coursework by Subject, Grade Level") 
 ```
 
-```{r Fig10a, fig.cap='Figure 10A'}
-Dems %>% mutate(delta = Score2 - Score) %>% 
-  ggplot() + geom_density(aes(x=Score), fill="grey") +
-  geom_density(aes(x=Score2), fill="red", alpha=.5) +
-  scale_x_continuous(labels=percent) +
-  # guides(fill=F) + coord_flip() +
-  theme_ + labs(subtitle="High School (2016)") +
-  labs(title="Pre-Test & Post-Test Scores")
+It's worth noting that these are percentage measuring samples of very 
+different sizes (e.g. `r nrow(filter(Dems, GradeLvl==11))` campers were in the 
+11th grade while only `r nrow(filter(Dems, GradeLvl==10))` & 
+`r nrow(filter(Dems, GradeLvl==12))` were in the 10th & 12th grade, respectively).
+A more detailed breakdown with the group sizes (`n`) is available in the table 
+below:
+
+```{r Table01, fig.cap='Table 1'}
+AP %>% 
+  left_join(select(Dems, SID, GradeLvl, School, District, Gender, Race)) %>%
+  rename(Course=AP) %>% filter(!is.na(GradeLvl)) %>%
+  group_by(Course, GradeLvl) %>% 
+  summarise(Have=percent(sum(Have)/n()), Plan=percent(sum(Plan)/n()), n=n()) %>%
+  arrange(desc(Have), desc(GradeLvl)) %>%
+  rename(`Grade Level`=GradeLvl, `Have taken`=Have, `Plan to take`=Plan) %>%
+  formattable(list(
+    `Have taken` = normalize_bar("#ADD8E6", 0.2),
+    `Plan to take` = normalize_bar("orange", 0.2),
+    n    = color_tile("white", "pink")
+  ))
 ```
 
-```{r Fig10b, fig.cap='Figure 10B'}
-last_plot() + facet_wrap("Edu")
-```  
-  
-```{r Fig11a, fig.cap='Figure 11a'}
+> A simplified version of this table can be generated if we collapse the 
+`Grade Level` variable:
+
+```{r Table02, fig.cap='Table 2'}
+AP %>% 
+  rename(Course=AP) %>% group_by(Course) %>% 
+  summarise(Have=percent(sum(Have)/n()), Plan=percent(sum(Plan)/n()), n=n()) %>%
+  arrange(desc(Have), desc(Plan)) %>%
+  rename(`Have taken`=Have, `Plan to take`=Plan) %>%
+  formattable(list(
+    `Have taken` = normalize_bar("#ADD8E6", 0.2),
+    `Plan to take` = normalize_bar("orange", 0.2)
+  ))
+```
+
+## By Student
+
+Now that we've explored the overall AP coursework of the students, let's move on
+to another important question that we might have. How many AP courses has the
+average student already taken? This is highly dependent on thier grade level 
+(because many AP courses aren't offered until later in high school), so we'll
+create histograms by each grade level:
+
+```{r Fig09, fig.width=8, fig.height=5, fig.cap='Figure 9'}
+AP %>% group_by(SID) %>% summarise(AP.taken = sum(Have)) %>% right_join(Dems) %>%
+  filter(!is.na(GradeLvl)) %>% rename(Grade=GradeLvl) %>%
+  ggplot(aes(x=AP.taken, fill=Grade)) + 
+  geom_histogram(alpha=0.75, binwidth=0.9, color="black") + 
+  facet_wrap("Grade", labeller = label_both) + #facet_grid(Gender~Race) + 
+  theme_ + labs(subtitle="High School (2016)") +
+  theme(strip.background=element_rect(fill="#D2D2D2")) + 
+  scale_fill_economist(name="Grade Level") +
+  labs(x="Number of AP Courses Taken", y="Count of Students", 
+       title="Number of AP Courses per Student, by Grade Level") 
+```
+
+As we'd expect, it appears that the number of AP courses (i.e. the count) seems
+to follow a [Poisson-like distribution][Poisson]. Perhaps if I get around to it
+I might be able to create a negative binomial regression to model the number of
+AP courses taken...
+
+# Numerical Scales
+
+## Pursue a career
+
+Students were asked to rate the above statement on a Likert-like scale from (1)
+**Not very likely** to (10) **Very likely**.
+
+> Q8. Likelihood to pursue a career in the health professions
+
+```{r Fig10, fig.width=8, fig.height=5, fig.cap='Figure 10'}
 Dems %>% 
-  filter(!is.na(Edu), !is.na(GradeLvl)) %>%
-  ggplot(aes(x=Edu, y=Score, color=Edu, linetype=Gender)) +
-  geom_curve(aes(y=Score, yend=Score2, xend=Edu), position="jitter",
-              curvature = -0.1, arrow = arrow(length = unit(0.3,"cm"))) +
-  scale_y_continuous(labels=percent) + coord_flip() +
-  guides(color=F) +#guide_legend(nrow=2)) +
-  # scale_color_brewer(name="Parent's Education", palette = "Spectral") +
-  theme_ + labs(subtitle="High School (2016)") +
-  labs(title="∆ Test Scores by Parents Educational Attainment")   
+  ggplot(aes(x=Q8)) + 
+  geom_histogram(alpha=0.75, bins=10, color="black") + lims(x=c(1,10)) +
+  theme_ + labs(y="Number of Students",  subtitle="Pre-Camp (2016, High School)",
+    x="Likelihood to pursue a career in the health professions",
+    title="Likelihood to Pursue Health Professions") 
 ```
 
-```{r Fig11b, fig.cap='Figure 11B'}
-last_plot() + facet_grid(GradeLvl~Race)
-# Dems %>% 
-#   filter(!is.na(Edu)) %>%
-#   ggplot(aes(x=Race, y=Score, color=Edu)) +
-#   geom_curve(aes(y=Score, yend=Score2, xend=Race), position="jitter",
-#               curvature = -0.1, arrow = arrow(length = unit(0.3,"cm"))) +
-#   scale_y_continuous(labels=percent) + coord_flip() +
-#   # guides(color=F) +#guide_legend(nrow=2)) +
-#   scale_color_brewer(name="Edu", palette = "Dark2") +
-#   theme_ + labs(subtitle="High School (2016)") +
-#   labs(title="∆ Test Scores by Parents Educational Attainment")   +
-#   facet_grid(GradeLvl ~ Race)
+
+## Prepared for college
+
+> Q11. How prepared do you feel for taking college level science courses?
+
+Students were asked to rate the above statement on a Likert-like scale from (1)
+**Not very well prepared** to (10) **Very well prepared**.
+
+```{r Fig11, fig.width=8, fig.height=5, fig.cap='Figure 11'}
+Dems %>% 
+  ggplot(aes(x=Q11)) + 
+  geom_histogram(alpha=0.75, bins=10, color="black") + lims(x=c(1,10)) +
+  theme_ + labs(y="Number of Students",  subtitle="Pre-Camp (2016, High School)",
+    x="How prepared do you feel for taking college level science courses?",
+    title="Preparedness For College Level Science Courses") 
 ```
+
+
+## Knowledge of careers
+
+> Q12. How knowledgeable do you feel about potential career options in the health sciences?
+
+Students were asked to rate the above statement on a Likert-like scale from (1)
+**Not very knowledgeable** to (10) **Very knowledgeable**.
+
+```{r Fig12, fig.width=8, fig.height=5, fig.cap='Figure 12'}
+Dems %>% 
+  ggplot(aes(x=Q12)) + 
+  geom_histogram(alpha=0.75, bins=10, color="black") + lims(x=c(1,10)) +
+  theme_ + labs(y="Number of Students",  subtitle="Pre-Camp (2016, High School)",
+    x="How knowledgeable do you feel about potential 
+    career options in the health sciences?",
+    title="Knowledge of Career Options") 
+```
+
+
+# Other variables
+
+## Text Responses
+
++ In your own words, why are you attending this camp?
++ Briefly describe your expectations for this year's DMS Health Sciences?
++ What do you think you might want to do when you graduate college?
+
+## Factors 
+
++ Favorite class/subject
+    + Why
++ If you’ve attended any other academic camps in the past 4 years, list them below:
+    + Camp name
+    + Academic field
+    + Date Attended
++ How did you become interested in attending this year's Health Sciences Summer Camp? (all that apply)
+    + Teacher talked about it (<code>`r percent(nrow(filter(Dems, str_detect(Q7, "Teacher")))/nrow(Dems))`</code>)
+    + School Counselor recommendation (<code>`r percent(nrow(filter(Dems, str_detect(Q7, "Counselor")))/nrow(Dems))`</code>)
+    + Parents knew about it (<code>`r percent(nrow(filter(Dems, str_detect(Q7, "Parents")))/nrow(Dems))`</code>)
+    + Other (fill in the blank)
+
 # License
 
 ```
@@ -277,3 +534,9 @@ below is the information About the R Session at the time it was compiled:
 devtools::session_info()
 ```
 
+[Oakes]: http://www.esourceresearch.org/eSourceBook/MeasuringSocioeconomicStatus/1LearningObjectives/tabid/767/Default.aspx "Measuring Socioeconomic Status; National Institutes of Health"
+[Travis Edu]: http://factfinder.census.gov/bkmk/table/1.0/en/ACS/14_5YR/S1501/0500000US48453 "EDUCATIONAL ATTAINMENT of Travis County (2014)"
+[25629949]: http://www.ncbi.nlm.nih.gov/pubmed/25629949 "The Role of Socioeconomic Status in Medical School Admissions: Validation of a Socioeconomic Indicator for Use in Medical School Admissions."
+[EO Visual]: Demographics/EO_Scale.png "Source: Effective Practices for Using the AAMC Socioeconomic Status Indicators in Medical School Admissions"
+[EO scale]: https://www.aamc.org/download/330166/data/seseffectivepractices.pdf "Effective Practices for Using the AAMC Socioeconomic Status Indicators in Medical School Admissions"
+[Poisson]: https://en.wikipedia.org/wiki/Poisson_distribution "Poisson distribution Wikipedia Page"
