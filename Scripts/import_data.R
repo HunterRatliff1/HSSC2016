@@ -5,12 +5,21 @@ require(stringr)
 require(lubridate)
 require(rio)
 
+
 ################################################################################ 
 ##                  Read the raw data from the Google Sheets                  ##
 ################################################################################
 
 ## ~~~ Download the key for the HS Pre-Test ~~~
-PreKey <- gs_title("HS Responses ('16)") %>% gs_read_csv("HS_Test-Pre Key")
+Key <- gs_title("HS Responses ('16)") %>% gs_read_csv("HS_Test Key")
+Key %>% select(QID, Answer, Question, A:`F`) %>%
+  gather(Letter, Choice, A:`F`) %>% filter(!is.na(Choice)) %>%
+  mutate(
+    Topic = str_extract(QID, "\\[..\\]"),
+    Topic = str_replace_all(Topic, "\\[|\\]", ""),
+    QID  = str_replace(QID, " \\[..\\]", "")) %>%
+  select(QID, Topic, Answer, Letter, Choice, Question)
+
 
 
 ## ~~~ Download the HS Pre-Test and score it ~~~
@@ -21,7 +30,7 @@ gs_title("HS Responses ('16)") %>% gs_read_csv("HS_Test-Pre") %>%
   filter(QID!="Q08 [NS]") %>% # filter out duplicate
   
   # Join with the answer key, and preform scoring
-  left_join(select(PreKey, QID, Answer)) %>%
+  left_join(select(Key, QID, Answer)) %>%
   mutate(isCorrect = if_else(Response==Answer, T, F)) %>%
   mutate(Score     = if_else(Response==Answer, "Correct", "Wrong")) %>%
   
@@ -46,7 +55,7 @@ gs_title("HS Responses ('16)") %>% gs_read_csv("HS_Test-Post") %>%
   filter(QID!="Q08 [NS] DONT ANSWER") %>% # filter out duplicate
   
   # Join with the answer key, and preform scoring
-  left_join(select(PreKey, QID, Answer)) %>%
+  left_join(select(Key, QID, Answer)) %>%
   mutate(isCorrect = if_else(Response==Answer, T, F)) %>%
   mutate(Score     = if_else(Response==Answer, "Correct", "Wrong")) %>%
   
@@ -198,11 +207,11 @@ gs_title("HS Responses ('16)") %>%
   
   # Calculate pre-test scores and join resulting table
   left_join({import("HS/Data/Pre/Test.csv") %>% 
-      group_by(SID) %>% summarise(Score = sum(isCorrect)/n())}) %>%
+      group_by(SID) %>% summarise(Before = sum(isCorrect)/n())}) %>%
   
   # Calculate post-test scores and join resulting table
   left_join({import("HS/Data/Post/Test.csv") %>% 
-      group_by(SID) %>% summarise(Score2 = sum(isCorrect)/n())}) %>%
+      group_by(SID) %>% summarise(After = sum(isCorrect)/n())}) %>%
   
   # Calculate planned AP courses and join
   left_join({import("HS/Data/AP.csv") %>% 
@@ -220,3 +229,8 @@ gs_title("HS Responses ('16)") %>%
 
 
 # import("Data/2016/HS/PreTest.csv") %>% glimpse()
+
+## ~~~ Join in the School District Info ~~~
+gs_title("HS Responses ('16)") %>% gs_read_csv("HighSchools") %>% 
+  select(School, District) %>% right_join(import("HS/Data/Pre/Survey.RDS")) %>%
+  export("HS/Data/Pre/Survey.RDS")
