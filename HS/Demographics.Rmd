@@ -11,12 +11,14 @@ output:
     toc_depth: 2
     code_folding: show
 ---
+<hr>
+**Author:** @[HunterRatliff1](https://twitter.com/HunterRatliff1)<br>
+**Published to:** [RPubs](http://rpubs.com/HunterRatliff1/DMS_HS_2016)<br>
+**Source Code:** Available on [Github](https://github.com/HunterRatliff1/)
 
-**Source Code:** Github:
-[HunterRatliff1/HSSC2016](https://github.com/HunterRatliff1/HSSC2016)  
-**Published to:** [RPubs](http://rpubs.com/HunterRatliff1/DMS_HS_2016)   
-**Author:** `Hunter Ratliff` @[HunterRatliff1](https://twitter.com/HunterRatliff1)  
-
++ Repo: [HunterRatliff1/HSSC2016](https://github.com/HunterRatliff1/HSSC2016)
++ File: [~/HSSC2016/HS/Demographics.Rmd](https://github.com/HunterRatliff1/HSSC2016/blob/master/HS/Demographics.Rmd)
+<hr>
 
 
 
@@ -149,7 +151,7 @@ This can also be expressed in percentage format:
 Students were asked to select one or more boxes describing their gender 
 identification. The options the were provided are as follows: **Female**, 
 **Male**, and/or **I'd prefer not answer**. Additionally, students were allowed 
-to write in their own responses. For the purpose of analysis, all respponses  
+to write in their own responses. For the purpose of analysis, all respponses
 other than male or female have been categorized as **Other**.
 
 ```{r Fig03, fig.width=8, fig.height=5, fig.cap='Figure 3'}
@@ -182,9 +184,10 @@ these data were simplified into simple factors using the following heuristic:
 
 The detailed Race/Ethnicity ID data are available in the "Demographics" table
 
-```{r Fig04, fig.width=7, fig.height=4, fig.cap='Figure 4'}
+```{r Fig04a, fig.width=7, fig.height=4, fig.cap='Figure 4A'}
 # counts by gender & race
 Dems %>% count(Race, Gender, sort=T) %>% 
+  filter(!is.na(Race)) %>%
   ggplot(aes(x=Race, y=n, fill=Gender, label=str_c(n, " "))) + 
   geom_bar(stat="identity") + 
     geom_text(stat="identity", position = "stack", size=5,
@@ -192,6 +195,19 @@ Dems %>% count(Race, Gender, sort=T) %>%
   coord_flip() + scale_fill_wsj(name="Gender self-identification") +
   theme_ + labs(subtitle="High School (2016)", y="Number of Students") +
   labs(title="Students by race & gender ID")
+```
+
+```{r Fig04b, fig.width=9, fig.height=4, fig.cap='Figure 4B'}
+Dems %>% count(Race, Gender, sort=T) %>% 
+  filter(!is.na(Race)) %>%
+  ggplot(aes(x=Race, y=n, fill=Gender, label=str_c(n, " "))) + 
+  geom_bar(stat="identity", position="fill") + 
+  scale_y_continuous(labels=percent) +
+    # geom_text(stat="identity", position = "stack", size=5,
+            # color="white", vjust=.5, hjust=1) +  coord_flip() +
+  coord_flip() + scale_fill_wsj(name="Gender self-identification") +
+  theme_ + labs(subtitle="High School (2016)", y="Percent of Students") +
+  labs(title="Conditional Percentage of Gender ID by Race ID")
 ```
 
 # Socioeconomic Indicator
