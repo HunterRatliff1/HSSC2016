@@ -11,14 +11,14 @@ output:
     toc_depth: 2
     code_folding: show
 ---
+<hr>
+**Author:** @[HunterRatliff1](https://twitter.com/HunterRatliff1)<br>
+**Published to:** `NA`<br>
+**Source Code:** Available on [Github](https://github.com/HunterRatliff1/)
 
-**Source Code:** Github:
-[HunterRatliff1/        ](https://github.com/HunterRatliff1/    )  
-**Published to:** `NA`   
-**Author:** `Hunter Ratliff` @[HunterRatliff1](https://twitter.com/HunterRatliff1)  
-
-
-
++ Repo: [HunterRatliff1/HSSC2016](https://github.com/HunterRatliff1/HSSC2016)
++ File: [~/HSSC2016/HS/TestResults.Rmd](https://github.com/HunterRatliff1/HSSC2016/blob/master/HS/TestResults.Rmd)
+<hr>
 
 ```{r global_options, include=FALSE}
 require(knitr)
@@ -30,6 +30,8 @@ knitr::opts_chunk$set(fig.width=8, fig.height=6, fig.path='TestResults/',
 
 
 ```{r load_data}
+require(effsize)
+
 require(rio)
 require(dplyr)
 require(tidyr)
@@ -37,27 +39,155 @@ require(stringr)
 require(ggplot2)
 require(ggthemes)
 require(scales)
+require(formattable)
+require(htmlTable)
 
 Test.Pre <- import("Data/Pre/Test.csv", setclass="tbl_df")
+Before <- import("Data/Tests/Before.csv", setclass="tbl_df")
 Test.Post <- import("Data/Post/Test.csv", setclass="tbl_df")
+After <- import("Data/Tests/After.csv", setclass="tbl_df")
+
 Dems <- import("Data/Pre/Survey.RDS")
+Key <- import("Data/Tests/Key.csv", setclass="tbl_df")
 
 theme_ <- theme_fivethirtyeight() + theme(axis.title=element_text()) 
 ```
 
-# Pre-Test Questions
+# Objectives
 
-```{r Fig01, fig.width=6, fig.height=4, fig.cap='Figure 01'}
+Taken from the *Summer STEM Grant to Dell Med School Reporting Matrix*
+
+## In this report
+
+**Objective #1:** Increase students’ interest in health careers as measured by post-survey<br>
+**Objective #2:** Improve students’ focus and interest in school<br>
+**Objective #3:** Improve students’ enrollment in STEM courses at their school<br>
+**Objective #4:** Improve the academic credentials of students applying to college<br>
+**Objective #5:** Increase middle and high-school students’ (especially minority and disadvantaged sudents') science knowledge and preparedness for health professions<br>
+
+```{r Objectives1}
+data_frame(
+  Historical=c("80% of students surveyed indicated that they were more likely to pursue a health science career after completing the camp", "<code>Not measured</code>", "In 2015, 85% of campers stated that they learned the importance of math and science in the real world by attending the camp", "<code>Not measured</code>", "<code>Not measured</code>"), 
+  Projected=c("<b>80%</b> of students surveyed will indicate <b>greater likelihood</b> of <b>pursuing a health science career <em>after</em></b> completing the camp", "In post-camp survey, <b>85%</b> of students will indicate their <b>understanding of the need to focus and do well in school<b>", "In post-camp survey, <b>85%</b> of students will indicate their <b>intention to enroll in STEM courses</b> at their school&dagger;", "Through content-rich questions on pre and post-tests, <b>85%</b> of students will <b>demonstrate knowedge gained</b> - thus improved academic readiness", "Through content-rich questions on pre and post-tests, <b>85%</b> of students will demonstrate <b>increased science knowledge</b> and <b>preparedness</b> for health professions")) %>%
+  htmlTable(align="lrr", col.rgroup = c("white", "none"),
+            col.columns=c("#D7D7D7", "#D7D7D7"),
+            rnames=paste("#", 1:5, "  ", sep = ""),
+            tfoot="&dagger; Can further assess this goal at the end of each subsequent academic year by tracking students' choices and performance in STEM courses")
+```
+
+## Not measured here
+
+**Objective #1:** Identify promising students and foster their further development&dagger; <br>
+**Objective #2:** Number of students participating in summer program (number of students registered & number of students completing)<br>
+**Objective #3:** Dosage and duration of program<br>
+**Objective #4:** Program continuation/attendance during the following school year<br>
+
+```{r Objectives2}
+data_frame(
+  Historical=c("In 2015, 100 promising students were identified by their school counselors and instructed/ encouraged by program leadership and summer camp counselors", "A total of 100 students enrolled in the 2015 summer camp: 50 high-school-age, 50 middle-school-age. All completed the program", "In 2015, camps were 8 hours/day, 5 days a week. Two one-week sessions were held", "<code>School year sessions were not held</code>"), 
+  Projected=c("In 2016, 200 promising students will be identified by their school counselors and instructed/encouraged by program leadership and summer camp counselors&Dagger; ", "Number of students participating in the camp will double to 200: 100 high-school level, 100 middle-school level. Goal is that 90% will complete the summer program", "Two one-week sessions will be held: one for middle school, one for high school. Each camp will be 8 hours/day, 5 days/week", "50%-75% of participants will extend their involvement through planned (weekend) activities during academic year 2016-17&Dagger;")) %>%
+  htmlTable(align="lrr", col.rgroup = c("white", "none"),
+            col.columns=c("#D7D7D7", "#D7D7D7"),
+            rnames=paste("#", 1:4, "  ", sep = ""),
+            tfoot="&dagger; Can assess ongoing development of students by monitoring their continued participation in the program and sustained interest and performance in STEM<br>&Dagger; New element (not measurable within the summer time frame) is that 50%-75% of participants will extend their involvement through planned activities during academic year 2016-17.")
+```
+
+
+
+
+
+
+
+# High Level Visualizations
+
+First, let's compare the distributions of the pre-tests and post-tests. Later, we
+can dive into the weeds by looking at the questions and individual camper's 
+imporvements, but to begin we'll consider the aggregate distribution of scores:
+
+## Before the camp
+
+```{r Fig01a, fig.width=6, fig.height=4, fig.cap='Figure 1A'}
 # Density + Histogram of percentage correct
 Test.Pre %>% 
   group_by(SID) %>%
-  summarise(Score = sum(isCorrect)/n()) %>%
-  ggplot(aes(x=Score)) +
-  geom_histogram(aes(y=..density..), binwidth=0.06, alpha=0.75) +
+  summarise(Before = sum(isCorrect)/n()) %>%
+  ggplot(aes(x=Before)) +
+  geom_histogram(aes(y=..density..), binwidth=0.06, alpha=0.75,
+                 fill="grey") +
   geom_density() + 
-  scale_x_continuous(labels=percent) + 
+  scale_x_continuous(labels=percent, limits=c(0,1)) + 
   theme_ + labs(subtitle="High School (2016)") +
   labs(y="", title="Pre-Test Score Distribution")
+```
+
+## After the camp
+
+```{r Fig01b, fig.width=6, fig.height=4, fig.cap='Figure 1B'}
+# Density + Histogram of percentage correct
+Test.Post %>% 
+  group_by(SID) %>%
+  summarise(After = sum(isCorrect)/n()) %>%
+  ggplot(aes(x=After)) +
+  geom_histogram(aes(y=..density..), binwidth=0.06, alpha=0.5, 
+                 fill="red") +
+  geom_density() + 
+  scale_x_continuous(labels=percent, limits=c(0,1)) + 
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(y="", title="Post-Test Score Distribution")
+```
+
+Clearly the strong right-skew indicates that most of the campers improved their
+scores by the end of the camp. This can also be represented numerically, as shown
+in the table below:
+
+```{r}
+df <- full_join({Test.Post %>% 
+    group_by(SID) %>%
+    summarise(Score = sum(isCorrect)/n()) %>% 
+    mutate(Score = Score*100, Type="After")},
+{Test.Pre %>% 
+  group_by(SID) %>%
+  summarise(Score = sum(isCorrect)/n()) %>% 
+    mutate(Score = Score*100, Type="Before")
+  }) %>%
+  filter(!is.na(Score))
+```
+```{r Table1}
+df %>% group_by(Type) %>%
+  summarise(
+    mean =   round(mean(Score),2), 
+    median = round(median(Score),2), 
+    sd =     round(sd(Score), 2)) %>% kable()
+```
+
+# Hypothesis testing
+
+
+
+```{r ttest, echo=T}
+# Run a paired Student's T-test (one-sided)
+t.test(Dems$After, Dems$Before, alternative = "greater", paired=T)
+```
+
+```{r cohensd, echo=T}
+# Determine effect size (Cohen's d)
+cohen.d(Dems$After, Dems$Before, paired=T, na.rm=T)
+```
+
+# Pre-Test Questions
+
+```{r}
+
+Before %>% count(QID, Response) %>% rename(Before=n) %>%
+  spread(Response, Before) %>% 
+  tibble::remove_rownames() %>%
+  select(-`<NA>`) %>% as.data.frame() %>%
+  tibble::column_to_rownames("QID") %>%
+  d3heatmap::d3heatmap(Colv=F)
+
+# Key %>% mutate(Answer = if_else(Answer==Letter, "Correct", "Incorrect"))
+
+# After %>% count(QID, Response) %>% rename(After=n)
 ```
 
 ```{r Fig02a, fig.cap='Figure 2A'}
@@ -86,7 +216,7 @@ students will demonstrate increased science knowledge and preparedness for
 health professions.
 
 ```{r Fig09, fig.width=12, fig.height=8, fig.cap='Figure 9'}
-Dems %>% ggplot(aes(x=Edu, y=Score)) +
+Dems %>% ggplot(aes(x=Edu, y=Before)) +
   geom_violin(aes(fill=Edu)) +
   geom_jitter(alpha=0.5) +
   geom_boxplot(alpha=0.25, fill="white") +
@@ -97,9 +227,9 @@ Dems %>% ggplot(aes(x=Edu, y=Score)) +
 ```
 
 ```{r Fig10a, fig.width=12, fig.height=8, fig.cap='Figure 10A'}
-Dems %>% mutate(delta = Score2 - Score) %>% 
-  ggplot() + geom_density(aes(x=Score), fill="grey") +
-  geom_density(aes(x=Score2), fill="red", alpha=.5) +
+Dems %>% mutate(delta = After - Before) %>% 
+  ggplot() + geom_density(aes(x=Before), fill="grey") +
+  geom_density(aes(x=After), fill="red", alpha=.5) +
   scale_x_continuous(labels=percent) +
   # guides(fill=F) + coord_flip() +
   theme_ + labs(subtitle="High School (2016)") +
@@ -113,8 +243,8 @@ last_plot() + facet_wrap("Edu")
 ```{r Fig11a, fig.width=12, fig.height=8, fig.cap='Figure 11a'}
 Dems %>% 
   filter(!is.na(Edu), !is.na(GradeLvl)) %>%
-  ggplot(aes(x=Edu, y=Score, color=Edu, linetype=Gender)) +
-  geom_curve(aes(y=Score, yend=Score2, xend=Edu), position="jitter",
+  ggplot(aes(x=Edu, y=Before, color=Edu, linetype=Gender)) +
+  geom_curve(aes(y=Before, yend=After, xend=Edu), position="jitter",
               curvature = -0.1, arrow = arrow(length = unit(0.3,"cm"))) +
   scale_y_continuous(labels=percent) + coord_flip() +
   guides(color=F) +#guide_legend(nrow=2)) +
@@ -167,3 +297,47 @@ below is the information About the R Session at the time it was compiled:
 devtools::session_info()
 ```
 
+```{r, eval=F, include=F}
+require(isotope)
+filterCols <- c("Topic")
+tpl <- '
+<div style="border: 1px solid grey; margin:5px; padding:5px">
+  <div class="container">
+    <h3 class="question">{{QID}}: <b>{{Question}}</b></h3>
+    <h5 class="topic"><em>{{Topic}}</em></h3>
+      <b>A.</b>  {{A}}</br>
+      <b>B.</b>  {{B}}</br>
+      <b>C.</b>  {{C}}</br>
+      <b>D.</b>  {{D}}</br>
+      <b>E.</b>  {{E}}</br>
+      <b>F.</b>  {{F}}</br>
+  </div>
+  <hr>
+  <div class="container>
+    <div class="Answer"><b>Correct Answer:</b> {{Answer}}</div>
+  </div>
+</div>
+'
+Key %>% spread(Letter, Choice) %>%
+  isotope(filterCols=filterCols, sortCols=filterCols, lang='en', elemTpl=tpl)
+rm(filterCols, tpl)
+# d <- read.csv(system.file("data/candidatos.csv",package="isotope"), stringsAsFactors = FALSE)
+# 
+# filterCols <- c("genero","profesiones", "niveldeestudios","talante", "pragmaticoideologico","visionpais")
+# sortCols <- c("nombre","apoyosenadores","apoyorepresentantes")
+# 
+# tpl <- '
+# <div style="border: 1px solid grey; margin:5px; padding:5px">
+#   <div class="container">
+#     <h3 class="nombre">{{nombre}}</h3>
+#     <div style="width:125px; height: 125px; margin:auto">
+#       <img src={{foto}} class="circle" width="100px"/>
+#     </div>
+#     <p>Profesión: {{profesiones}}, Género: {{genero}},Nivel de estudios: {{niveldeestudios}}</p>
+#     <div class="apoyosenadores"><em>Apoyo Senadores:</em> {{apoyosenadores}}</div>
+#     <div class="apoyorepresentantes"><em>Apoyo Representantes:</em> {{apoyorepresentantes}}</div>
+#   </div>
+# </div>
+# '
+# isotope(d, filterCols = filterCols, sortCols = sortCols, lang = 'es', elemTpl = tpl)
+```
