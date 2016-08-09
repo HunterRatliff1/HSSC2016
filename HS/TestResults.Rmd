@@ -192,7 +192,8 @@ t.test(Dems$After, Dems$Before, alternative = "greater", paired=T)
 
 Considering our benchmark for "improvement" is that a students' score improves 
 (meaning `After - Before > 0.00%`), this test clearly indicates that there was 
-indeed improvement. 
+indeed improvement. According to our test, the "mean of the differences" was a +
+`r percent(t.test(Dems$After, Dems$Before, alternative = "greater", paired=T)$estimate)` improvement in scores. 
 
 Perhaps this is more easily shown if we consider the underlying distribution that 
 this test is testing: 
