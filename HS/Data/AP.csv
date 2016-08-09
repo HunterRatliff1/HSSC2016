@@ -1,0 +1,462 @@
+"SID","AP","Have","Plan"
+"10T4","Biology",FALSE,TRUE
+"10T2","Biology",FALSE,TRUE
+"10T6","Biology",TRUE,TRUE
+"2C5","Biology",TRUE,TRUE
+"10T3","Biology",FALSE,FALSE
+"4G2","Biology",FALSE,TRUE
+"10S5","Biology",TRUE,TRUE
+"2C1","Biology",FALSE,TRUE
+"10T5","Biology",TRUE,TRUE
+"4H5","Biology",TRUE,TRUE
+"2C3","Biology",TRUE,TRUE
+"10S4","Biology",TRUE,TRUE
+"4G6","Biology",FALSE,TRUE
+"4H2","Biology",FALSE,TRUE
+"10S3","Biology",TRUE,TRUE
+"10T1","Biology",TRUE,TRUE
+"9Q4","Biology",TRUE,TRUE
+"4G3","Biology",TRUE,TRUE
+"4H1","Biology",FALSE,TRUE
+"2D4","Biology",FALSE,TRUE
+"4G1","Biology",TRUE,TRUE
+"2D5","Biology",FALSE,TRUE
+"2C2","Biology",TRUE,TRUE
+"1A1","Biology",TRUE,TRUE
+"1A6","Biology",FALSE,TRUE
+"10S1","Biology",FALSE,TRUE
+"1B3","Biology",TRUE,TRUE
+"1B4","Biology",TRUE,TRUE
+"1A3","Biology",FALSE,TRUE
+"9Q6","Biology",FALSE,FALSE
+"1B5","Biology",FALSE,TRUE
+"9Q5","Biology",FALSE,TRUE
+"1B2","Biology",TRUE,TRUE
+"9Q2","Biology",TRUE,TRUE
+"1B1","Biology",FALSE,TRUE
+"9Q3","Biology",FALSE,TRUE
+"1A5","Biology",TRUE,TRUE
+"2D3","Biology",TRUE,TRUE
+"7M5","Biology",TRUE,TRUE
+"7M3","Biology",FALSE,TRUE
+"3E4","Biology",TRUE,TRUE
+"3F4","Biology",TRUE,TRUE
+"3E1","Biology",TRUE,TRUE
+"3E3","Biology",FALSE,FALSE
+"3E5","Biology",FALSE,TRUE
+"3E2","Biology",FALSE,TRUE
+"2D1","Biology",TRUE,TRUE
+"7N2","Biology",TRUE,TRUE
+"7N3","Biology",TRUE,TRUE
+"7N5","Biology",TRUE,TRUE
+"7N1","Biology",TRUE,TRUE
+"7N4","Biology",TRUE,TRUE
+"3F1","Biology",TRUE,TRUE
+"3F2","Biology",FALSE,TRUE
+"3F3","Biology",FALSE,TRUE
+"8O5","Biology",TRUE,TRUE
+"8O4","Biology",TRUE,TRUE
+"8O2","Biology",FALSE,TRUE
+"8P6","Biology",FALSE,TRUE
+"8P2","Biology",TRUE,TRUE
+"8P1","Biology",FALSE,TRUE
+"8P3","Biology",TRUE,TRUE
+"8O3","Biology",FALSE,TRUE
+"8P4","Biology",FALSE,FALSE
+"8O1","Biology",TRUE,TRUE
+"9R5","Biology",TRUE,TRUE
+"9R4","Biology",TRUE,TRUE
+"9R3","Biology",FALSE,TRUE
+"9R2","Biology",FALSE,TRUE
+"6L3","Biology",TRUE,TRUE
+"6L1","Biology",FALSE,TRUE
+"6L5","Biology",FALSE,TRUE
+"6K4","Biology",TRUE,TRUE
+"6K2","Biology",TRUE,TRUE
+"6L4","Biology",TRUE,TRUE
+"6L2","Biology",TRUE,TRUE
+"6K5","Biology",TRUE,TRUE
+"6K3","Biology",TRUE,TRUE
+"10T4","Chemistry",FALSE,TRUE
+"10T2","Chemistry",FALSE,TRUE
+"10T6","Chemistry",FALSE,TRUE
+"2C5","Chemistry",TRUE,TRUE
+"10T3","Chemistry",FALSE,FALSE
+"4G2","Chemistry",FALSE,TRUE
+"10S5","Chemistry",FALSE,TRUE
+"2C1","Chemistry",FALSE,TRUE
+"10T5","Chemistry",TRUE,TRUE
+"4H5","Chemistry",TRUE,TRUE
+"2C3","Chemistry",TRUE,TRUE
+"10S4","Chemistry",FALSE,TRUE
+"4G6","Chemistry",FALSE,TRUE
+"4H2","Chemistry",FALSE,TRUE
+"10S3","Chemistry",TRUE,TRUE
+"10T1","Chemistry",TRUE,TRUE
+"9Q4","Chemistry",FALSE,TRUE
+"4G3","Chemistry",FALSE,TRUE
+"4H1","Chemistry",FALSE,TRUE
+"2D4","Chemistry",FALSE,TRUE
+"4G1","Chemistry",FALSE,TRUE
+"2D5","Chemistry",TRUE,TRUE
+"2C2","Chemistry",TRUE,TRUE
+"1A1","Chemistry",TRUE,TRUE
+"1A6","Chemistry",FALSE,TRUE
+"10S1","Chemistry",FALSE,FALSE
+"1B3","Chemistry",TRUE,TRUE
+"1B4","Chemistry",TRUE,TRUE
+"1A3","Chemistry",FALSE,TRUE
+"9Q6","Chemistry",FALSE,TRUE
+"1B5","Chemistry",TRUE,TRUE
+"9Q5","Chemistry",FALSE,TRUE
+"1B2","Chemistry",FALSE,TRUE
+"9Q2","Chemistry",TRUE,TRUE
+"1B1","Chemistry",FALSE,TRUE
+"9Q3","Chemistry",FALSE,TRUE
+"1A5","Chemistry",TRUE,TRUE
+"2D3","Chemistry",FALSE,TRUE
+"7M5","Chemistry",TRUE,TRUE
+"7M3","Chemistry",FALSE,TRUE
+"3F4","Chemistry",TRUE,TRUE
+"3E1","Chemistry",FALSE,TRUE
+"3E3","Chemistry",FALSE,TRUE
+"3E5","Chemistry",FALSE,TRUE
+"3E2","Chemistry",FALSE,FALSE
+"2D1","Chemistry",TRUE,TRUE
+"7N2","Chemistry",FALSE,TRUE
+"7N3","Chemistry",TRUE,TRUE
+"7N5","Chemistry",FALSE,TRUE
+"7N1","Chemistry",FALSE,FALSE
+"7N4","Chemistry",TRUE,TRUE
+"3F1","Chemistry",TRUE,TRUE
+"3F2","Chemistry",FALSE,TRUE
+"3F3","Chemistry",FALSE,TRUE
+"8O5","Chemistry",TRUE,TRUE
+"8O4","Chemistry",FALSE,TRUE
+"8O2","Chemistry",FALSE,TRUE
+"8P6","Chemistry",FALSE,TRUE
+"8P2","Chemistry",TRUE,TRUE
+"8P1","Chemistry",FALSE,TRUE
+"8P3","Chemistry",FALSE,TRUE
+"8P5","Chemistry",TRUE,TRUE
+"8O3","Chemistry",FALSE,TRUE
+"8P4","Chemistry",FALSE,TRUE
+"8O1","Chemistry",FALSE,TRUE
+"9R5","Chemistry",TRUE,TRUE
+"9R4","Chemistry",TRUE,TRUE
+"9R3","Chemistry",TRUE,TRUE
+"9R2","Chemistry",FALSE,TRUE
+"6L3","Chemistry",TRUE,TRUE
+"6L1","Chemistry",FALSE,TRUE
+"6L5","Chemistry",FALSE,TRUE
+"6K4","Chemistry",FALSE,TRUE
+"6K2","Chemistry",FALSE,TRUE
+"6L4","Chemistry",FALSE,TRUE
+"6L2","Chemistry",TRUE,TRUE
+"6K5","Chemistry",TRUE,TRUE
+"6K3","Chemistry",TRUE,TRUE
+"10T4","Physics",FALSE,TRUE
+"10T2","Physics",FALSE,TRUE
+"10T6","Physics",FALSE,TRUE
+"2C5","Physics",FALSE,TRUE
+"10T3","Physics",FALSE,TRUE
+"4G2","Physics",FALSE,TRUE
+"10S5","Physics",FALSE,TRUE
+"2C1","Physics",FALSE,TRUE
+"10T5","Physics",FALSE,TRUE
+"4H5","Physics",TRUE,TRUE
+"2C3","Physics",FALSE,TRUE
+"10S4","Physics",FALSE,TRUE
+"4G6","Physics",FALSE,FALSE
+"4H2","Physics",FALSE,FALSE
+"10S3","Physics",TRUE,TRUE
+"10T1","Physics",TRUE,TRUE
+"10S6","Physics",FALSE,TRUE
+"9Q4","Physics",FALSE,TRUE
+"4G3","Physics",FALSE,TRUE
+"4H1","Physics",FALSE,TRUE
+"2D4","Physics",FALSE,TRUE
+"4G1","Physics",FALSE,TRUE
+"2C4","Physics",TRUE,TRUE
+"2D5","Physics",FALSE,TRUE
+"2C2","Physics",FALSE,TRUE
+"1A1","Physics",TRUE,TRUE
+"1A6","Physics",FALSE,TRUE
+"10S1","Physics",FALSE,TRUE
+"1B3","Physics",FALSE,TRUE
+"1B4","Physics",FALSE,FALSE
+"1A3","Physics",TRUE,TRUE
+"9Q6","Physics",FALSE,TRUE
+"9Q5","Physics",FALSE,TRUE
+"1B2","Physics",FALSE,TRUE
+"9Q2","Physics",TRUE,TRUE
+"9Q3","Physics",FALSE,TRUE
+"1A5","Physics",FALSE,TRUE
+"2D3","Physics",FALSE,TRUE
+"7M4","Physics",FALSE,TRUE
+"7M5","Physics",FALSE,TRUE
+"7M3","Physics",FALSE,FALSE
+"3E4","Physics",TRUE,TRUE
+"3F4","Physics",TRUE,TRUE
+"3E1","Physics",FALSE,TRUE
+"3E3","Physics",FALSE,TRUE
+"3E5","Physics",FALSE,TRUE
+"3E2","Physics",FALSE,TRUE
+"2D1","Physics",FALSE,TRUE
+"7N2","Physics",FALSE,TRUE
+"7N3","Physics",FALSE,TRUE
+"7N5","Physics",FALSE,TRUE
+"7N1","Physics",FALSE,TRUE
+"7N4","Physics",FALSE,TRUE
+"3F1","Physics",FALSE,TRUE
+"3F2","Physics",FALSE,TRUE
+"3F3","Physics",FALSE,TRUE
+"8O5","Physics",FALSE,TRUE
+"8O4","Physics",FALSE,TRUE
+"8P6","Physics",FALSE,TRUE
+"8P2","Physics",TRUE,TRUE
+"8P1","Physics",FALSE,TRUE
+"8P3","Physics",FALSE,TRUE
+"8P5","Physics",FALSE,TRUE
+"8O3","Physics",FALSE,TRUE
+"8P4","Physics",FALSE,TRUE
+"8O1","Physics",FALSE,TRUE
+"9R5","Physics",FALSE,TRUE
+"9R4","Physics",FALSE,FALSE
+"9R3","Physics",TRUE,TRUE
+"9R2","Physics",FALSE,TRUE
+"6L3","Physics",FALSE,TRUE
+"6L1","Physics",FALSE,TRUE
+"6L5","Physics",FALSE,TRUE
+"6K4","Physics",FALSE,TRUE
+"6K2","Physics",FALSE,TRUE
+"6L4","Physics",FALSE,TRUE
+"6L2","Physics",TRUE,TRUE
+"6K5","Physics",FALSE,TRUE
+"6K3","Physics",FALSE,TRUE
+"2C5","Statistics",FALSE,TRUE
+"10T3","Statistics",FALSE,TRUE
+"10S5","Statistics",FALSE,FALSE
+"2C1","Statistics",FALSE,TRUE
+"10T5","Statistics",FALSE,FALSE
+"4H5","Statistics",FALSE,TRUE
+"2C3","Statistics",FALSE,FALSE
+"10S4","Statistics",FALSE,TRUE
+"4G6","Statistics",FALSE,TRUE
+"4H2","Statistics",FALSE,TRUE
+"10S3","Statistics",FALSE,TRUE
+"10T1","Statistics",FALSE,TRUE
+"10S6","Statistics",FALSE,TRUE
+"9Q4","Statistics",FALSE,TRUE
+"4G3","Statistics",FALSE,TRUE
+"4H1","Statistics",FALSE,FALSE
+"2D4","Statistics",FALSE,TRUE
+"4G1","Statistics",FALSE,TRUE
+"2D5","Statistics",FALSE,TRUE
+"2C2","Statistics",FALSE,FALSE
+"1A1","Statistics",FALSE,TRUE
+"10S1","Statistics",FALSE,TRUE
+"1B3","Statistics",FALSE,TRUE
+"1B4","Statistics",FALSE,TRUE
+"1A3","Statistics",FALSE,TRUE
+"9Q6","Statistics",FALSE,FALSE
+"1B5","Statistics",FALSE,FALSE
+"9Q5","Statistics",FALSE,TRUE
+"1B2","Statistics",FALSE,TRUE
+"9Q2","Statistics",FALSE,TRUE
+"1B1","Statistics",FALSE,FALSE
+"9Q3","Statistics",FALSE,FALSE
+"1A5","Statistics",FALSE,FALSE
+"7M2","Statistics",FALSE,FALSE
+"7M5","Statistics",FALSE,TRUE
+"7M3","Statistics",FALSE,FALSE
+"3E4","Statistics",FALSE,TRUE
+"3F4","Statistics",FALSE,FALSE
+"3E3","Statistics",FALSE,TRUE
+"3E5","Statistics",FALSE,TRUE
+"3E2","Statistics",FALSE,FALSE
+"2D1","Statistics",FALSE,FALSE
+"7N2","Statistics",FALSE,TRUE
+"7N3","Statistics",FALSE,TRUE
+"7N5","Statistics",FALSE,TRUE
+"7N1","Statistics",FALSE,FALSE
+"7N4","Statistics",FALSE,TRUE
+"3F1","Statistics",FALSE,TRUE
+"3F2","Statistics",FALSE,TRUE
+"3F3","Statistics",FALSE,TRUE
+"8O5","Statistics",FALSE,TRUE
+"8O4","Statistics",FALSE,TRUE
+"8O2","Statistics",FALSE,FALSE
+"8P6","Statistics",FALSE,TRUE
+"8P1","Statistics",FALSE,TRUE
+"8P5","Statistics",FALSE,FALSE
+"8O3","Statistics",FALSE,FALSE
+"8P4","Statistics",FALSE,TRUE
+"8O1","Statistics",FALSE,TRUE
+"9R5","Statistics",FALSE,TRUE
+"9R4","Statistics",FALSE,TRUE
+"9R3","Statistics",FALSE,TRUE
+"9R2","Statistics",FALSE,TRUE
+"6L3","Statistics",FALSE,FALSE
+"6L1","Statistics",FALSE,FALSE
+"6L5","Statistics",FALSE,FALSE
+"6K4","Statistics",FALSE,FALSE
+"6K2","Statistics",FALSE,TRUE
+"6L2","Statistics",TRUE,TRUE
+"6K5","Statistics",FALSE,FALSE
+"6K3","Statistics",FALSE,TRUE
+"10T4","Calclus",FALSE,TRUE
+"10T2","Calclus",FALSE,TRUE
+"10T6","Calclus",FALSE,TRUE
+"2C5","Calclus",FALSE,TRUE
+"10T3","Calclus",FALSE,TRUE
+"4G2","Calclus",FALSE,TRUE
+"10S5","Calclus",FALSE,TRUE
+"2C1","Calclus",FALSE,TRUE
+"10T5","Calclus",FALSE,TRUE
+"4H5","Calclus",FALSE,TRUE
+"2C3","Calclus",FALSE,TRUE
+"10S4","Calclus",FALSE,TRUE
+"4G6","Calclus",FALSE,TRUE
+"4H2","Calclus",FALSE,TRUE
+"10S3","Calclus",FALSE,TRUE
+"10T1","Calclus",TRUE,TRUE
+"10S6","Calclus",FALSE,TRUE
+"9Q4","Calclus",FALSE,TRUE
+"4G3","Calclus",FALSE,TRUE
+"4H1","Calclus",FALSE,TRUE
+"2D4","Calclus",FALSE,FALSE
+"4G4","Calclus",FALSE,TRUE
+"4G1","Calclus",FALSE,TRUE
+"2D5","Calclus",TRUE,TRUE
+"2C2","Calclus",FALSE,TRUE
+"1A1","Calclus",TRUE,TRUE
+"10S1","Calclus",FALSE,TRUE
+"1B3","Calclus",TRUE,TRUE
+"1B4","Calclus",FALSE,TRUE
+"1A3","Calclus",FALSE,TRUE
+"9Q6","Calclus",FALSE,TRUE
+"1B5","Calclus",FALSE,TRUE
+"9Q5","Calclus",FALSE,TRUE
+"1B2","Calclus",FALSE,TRUE
+"9Q2","Calclus",FALSE,FALSE
+"1B1","Calclus",FALSE,TRUE
+"9Q3","Calclus",FALSE,TRUE
+"1A5","Calclus",FALSE,TRUE
+"2D3","Calclus",FALSE,TRUE
+"7M2","Calclus",FALSE,TRUE
+"7M4","Calclus",FALSE,TRUE
+"7M5","Calclus",FALSE,TRUE
+"7M3","Calclus",FALSE,FALSE
+"3E4","Calclus",FALSE,TRUE
+"3F4","Calclus",FALSE,TRUE
+"3E1","Calclus",FALSE,TRUE
+"3E3","Calclus",FALSE,TRUE
+"3E5","Calclus",FALSE,TRUE
+"3E2","Calclus",FALSE,TRUE
+"2D1","Calclus",FALSE,TRUE
+"7N2","Calclus",FALSE,TRUE
+"7N3","Calclus",FALSE,TRUE
+"7N5","Calclus",FALSE,TRUE
+"7N1","Calclus",FALSE,FALSE
+"7N4","Calclus",FALSE,TRUE
+"3F1","Calclus",FALSE,TRUE
+"3F2","Calclus",FALSE,TRUE
+"3F3","Calclus",FALSE,TRUE
+"8O5","Calclus",FALSE,TRUE
+"8O4","Calclus",FALSE,TRUE
+"8O2","Calclus",FALSE,TRUE
+"8P6","Calclus",FALSE,TRUE
+"8P2","Calclus",FALSE,FALSE
+"8P1","Calclus",FALSE,TRUE
+"8P3","Calclus",FALSE,TRUE
+"8P5","Calclus",TRUE,TRUE
+"8O3","Calclus",FALSE,TRUE
+"8P4","Calclus",FALSE,TRUE
+"8O1","Calclus",FALSE,FALSE
+"9R5","Calclus",FALSE,TRUE
+"9R4","Calclus",FALSE,TRUE
+"9R3","Calclus",FALSE,TRUE
+"9R2","Calclus",FALSE,TRUE
+"6L3","Calclus",FALSE,TRUE
+"6L1","Calclus",FALSE,TRUE
+"6L5","Calclus",FALSE,TRUE
+"6K4","Calclus",FALSE,FALSE
+"6K2","Calclus",FALSE,TRUE
+"6L4","Calclus",FALSE,TRUE
+"6L2","Calclus",FALSE,TRUE
+"6K5","Calclus",FALSE,TRUE
+"6K3","Calclus",FALSE,TRUE
+"10T4","Computer Science",TRUE,TRUE
+"2C5","Computer Science",FALSE,FALSE
+"10T3","Computer Science",FALSE,FALSE
+"10S5","Computer Science",FALSE,TRUE
+"2C1","Computer Science",FALSE,TRUE
+"10T5","Computer Science",FALSE,FALSE
+"4H5","Computer Science",FALSE,TRUE
+"2C3","Computer Science",FALSE,FALSE
+"10S4","Computer Science",FALSE,TRUE
+"4G6","Computer Science",FALSE,FALSE
+"4H2","Computer Science",FALSE,FALSE
+"10S3","Computer Science",TRUE,TRUE
+"10T1","Computer Science",TRUE,TRUE
+"10S6","Computer Science",FALSE,TRUE
+"9Q4","Computer Science",TRUE,TRUE
+"10S2","Computer Science",FALSE,TRUE
+"4G3","Computer Science",TRUE,TRUE
+"4H1","Computer Science",FALSE,TRUE
+"2D4","Computer Science",FALSE,TRUE
+"4G1","Computer Science",FALSE,FALSE
+"2D5","Computer Science",TRUE,TRUE
+"2C2","Computer Science",FALSE,FALSE
+"1A1","Computer Science",TRUE,TRUE
+"1A6","Computer Science",FALSE,TRUE
+"10S1","Computer Science",FALSE,TRUE
+"1B3","Computer Science",FALSE,FALSE
+"1A3","Computer Science",FALSE,TRUE
+"1B5","Computer Science",FALSE,FALSE
+"9Q5","Computer Science",FALSE,FALSE
+"1B2","Computer Science",TRUE,TRUE
+"9Q2","Computer Science",TRUE,TRUE
+"9Q3","Computer Science",FALSE,FALSE
+"1A5","Computer Science",FALSE,FALSE
+"2D3","Computer Science",TRUE,TRUE
+"7M2","Computer Science",FALSE,FALSE
+"7M4","Computer Science",FALSE,FALSE
+"7M5","Computer Science",FALSE,FALSE
+"7M3","Computer Science",FALSE,FALSE
+"3E4","Computer Science",FALSE,FALSE
+"3F4","Computer Science",FALSE,TRUE
+"3E1","Computer Science",FALSE,FALSE
+"3E3","Computer Science",FALSE,FALSE
+"3E5","Computer Science",FALSE,FALSE
+"3E2","Computer Science",FALSE,FALSE
+"2D1","Computer Science",FALSE,FALSE
+"7N2","Computer Science",FALSE,TRUE
+"7N3","Computer Science",FALSE,FALSE
+"7N5","Computer Science",FALSE,TRUE
+"7N4","Computer Science",TRUE,TRUE
+"3F1","Computer Science",FALSE,FALSE
+"3F2","Computer Science",TRUE,TRUE
+"3F3","Computer Science",FALSE,TRUE
+"8O4","Computer Science",FALSE,TRUE
+"8O2","Computer Science",FALSE,FALSE
+"8P6","Computer Science",FALSE,FALSE
+"8P2","Computer Science",FALSE,FALSE
+"8P1","Computer Science",FALSE,FALSE
+"8P3","Computer Science",FALSE,TRUE
+"8P5","Computer Science",FALSE,FALSE
+"8O3","Computer Science",TRUE,TRUE
+"8P4","Computer Science",TRUE,TRUE
+"8O1","Computer Science",FALSE,FALSE
+"9R5","Computer Science",FALSE,TRUE
+"9R4","Computer Science",FALSE,FALSE
+"9R3","Computer Science",FALSE,FALSE
+"9R2","Computer Science",FALSE,TRUE
+"6L3","Computer Science",FALSE,FALSE
+"6L1","Computer Science",TRUE,TRUE
+"6L5","Computer Science",FALSE,FALSE
+"6K4","Computer Science",FALSE,FALSE
+"6K2","Computer Science",FALSE,FALSE
+"6L2","Computer Science",FALSE,FALSE
+"6K5","Computer Science",FALSE,TRUE
