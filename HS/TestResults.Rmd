@@ -13,7 +13,7 @@ output:
 ---
 <hr>
 **Author:** @[HunterRatliff1](https://twitter.com/HunterRatliff1)<br>
-**Published to:** `NA`<br>
+**Published to:** [RPubs](http://rpubs.com/HunterRatliff1/DMS_HS2_2016)<br>
 **Source Code:** Available on [Github](https://github.com/HunterRatliff1/)
 
 + Repo: [HunterRatliff1/HSSC2016](https://github.com/HunterRatliff1/HSSC2016)
@@ -50,61 +50,77 @@ After <- import("Data/Tests/After.csv", setclass="tbl_df")
 Dems <- import("Data/Pre/Survey.RDS")
 Key <- import("Data/Tests/Key.csv", setclass="tbl_df")
 
-theme_ <- theme_fivethirtyeight() + theme(axis.title=element_text()) 
+theme_ <- theme_fivethirtyeight() + theme(axis.title=element_text(), strip.background=element_rect(fill="#DDDDDD")) 
 ```
 
 # Objectives
 
-Taken from the *Summer STEM Grant to Dell Med School Reporting Matrix*
+These objectives were taken from the *Summer STEM Grant to Dell Med School
+Reporting Matrix*. The matrix outlined nine objectives (see below) across three 
+variables (i.e. columns). 
 
 ## In this report
 
-**Objective #1:** Increase students’ interest in health careers as measured by post-survey<br>
-**Objective #2:** Improve students’ focus and interest in school<br>
-**Objective #3:** Improve students’ enrollment in STEM courses at their school<br>
-**Objective #4:** Improve the academic credentials of students applying to college<br>
-**Objective #5:** Increase middle and high-school students’ (especially minority and disadvantaged sudents') science knowledge and preparedness for health professions<br>
++ **Objective #1:** Increase students’ interest in health careers as measured by post-survey
++ **Objective #2:** Improve students’ focus and interest in school
++ **Objective #3:** Improve students’ enrollment in STEM courses at their school
++ **Objective #4:** Improve the academic credentials of students applying to college
++ **Objective #5:** Increase middle and high-school students’ (especially minority and disadvantaged sudents') science knowledge and preparedness for health professions
 
 ```{r Objectives1}
 data_frame(
   Historical=c("80% of students surveyed indicated that they were more likely to pursue a health science career after completing the camp", "<code>Not measured</code>", "In 2015, 85% of campers stated that they learned the importance of math and science in the real world by attending the camp", "<code>Not measured</code>", "<code>Not measured</code>"), 
   Projected=c("<b>80%</b> of students surveyed will indicate <b>greater likelihood</b> of <b>pursuing a health science career <em>after</em></b> completing the camp", "In post-camp survey, <b>85%</b> of students will indicate their <b>understanding of the need to focus and do well in school<b>", "In post-camp survey, <b>85%</b> of students will indicate their <b>intention to enroll in STEM courses</b> at their school&dagger;", "Through content-rich questions on pre and post-tests, <b>85%</b> of students will <b>demonstrate knowedge gained</b> - thus improved academic readiness", "Through content-rich questions on pre and post-tests, <b>85%</b> of students will demonstrate <b>increased science knowledge</b> and <b>preparedness</b> for health professions")) %>%
-  htmlTable(align="lrr", col.rgroup = c("white", "none"),
-            col.columns=c("#D7D7D7", "#D7D7D7"),
+  htmlTable(align="lrr", col.rgroup = c("#3a87ad", "#d9edf7"),
+            col.columns=c("#D7D7D7", "#E7E7E7"),
             rnames=paste("#", 1:5, "  ", sep = ""),
-            tfoot="&dagger; Can further assess this goal at the end of each subsequent academic year by tracking students' choices and performance in STEM courses")
+            tfoot="&dagger; <em>Can further assess this goal at the end of each subsequent academic year by tracking students' choices and performance in STEM courses</em>")
 ```
+
 
 ## Not measured here
 
-**Objective #1:** Identify promising students and foster their further development&dagger; <br>
-**Objective #2:** Number of students participating in summer program (number of students registered & number of students completing)<br>
-**Objective #3:** Dosage and duration of program<br>
-**Objective #4:** Program continuation/attendance during the following school year<br>
++ **Objective #6:** Identify promising students and foster their further development&dagger;
++ **Objective #7:** Number of students participating in summer program (number of students registered & number of students completing)
++ **Objective #8:** Dosage and duration of program
++ **Objective #9:** Program continuation/attendance during the following school year
 
 ```{r Objectives2}
 data_frame(
   Historical=c("In 2015, 100 promising students were identified by their school counselors and instructed/ encouraged by program leadership and summer camp counselors", "A total of 100 students enrolled in the 2015 summer camp: 50 high-school-age, 50 middle-school-age. All completed the program", "In 2015, camps were 8 hours/day, 5 days a week. Two one-week sessions were held", "<code>School year sessions were not held</code>"), 
   Projected=c("In 2016, 200 promising students will be identified by their school counselors and instructed/encouraged by program leadership and summer camp counselors&Dagger; ", "Number of students participating in the camp will double to 200: 100 high-school level, 100 middle-school level. Goal is that 90% will complete the summer program", "Two one-week sessions will be held: one for middle school, one for high school. Each camp will be 8 hours/day, 5 days/week", "50%-75% of participants will extend their involvement through planned (weekend) activities during academic year 2016-17&Dagger;")) %>%
-  htmlTable(align="lrr", col.rgroup = c("white", "none"),
-            col.columns=c("#D7D7D7", "#D7D7D7"),
-            rnames=paste("#", 1:4, "  ", sep = ""),
-            tfoot="&dagger; Can assess ongoing development of students by monitoring their continued participation in the program and sustained interest and performance in STEM<br>&Dagger; New element (not measurable within the summer time frame) is that 50%-75% of participants will extend their involvement through planned activities during academic year 2016-17.")
+  htmlTable(align="lrr", col.rgroup = c("#efb73e", "#fcf8e3"),
+            col.columns=c("#D7D7D7", "#E7E7E7"),
+            rnames=paste("#", 6:9, "  ", sep = ""),
+            tfoot="&dagger; <em>Can assess ongoing development of students by monitoring their continued participation in the program and sustained interest and performance in STEM</em><br>&Dagger; <em>New element (not measurable within the summer time frame) is that 50%-75% of participants will extend their involvement through planned activities during academic year 2016-17</em>")
+
 ```
 
+---------------------------------------------------------------------------------
 
-
-
-
-
-
-# High Level Visualizations
+# Test Results
 
 First, let's compare the distributions of the pre-tests and post-tests. Later, we
-can dive into the weeds by looking at the questions and individual camper's 
+can dive into the weeds by looking at the questions and individual student's 
 imporvements, but to begin we'll consider the aggregate distribution of scores:
 
+```{r}
+df.pre  <- Test.Pre %>% group_by(SID) %>% summarise(Before = sum(isCorrect)/n())
+df.post <- Test.Post %>% group_by(SID) %>% summarise(After = sum(isCorrect)/n())
+```
+
 ## Before the camp
+
+The distribution of the students' scores coming into the camp were around the 40's
+(mean = <code>`r percent(mean(df.pre$Before, na.rm=T))`</code>, median = 
+<code>`r percent(median(df.pre$Before, na.rm=T))`</code>; SD = 
+<code>`r percent(sd(df.pre$Before, na.rm=T))`</code>), meaning that our "average"
+student answered ~40 percent of the questions correctly. 
+
+Of course, not everyone scored the average score; some outpreformed the aveage and 
+some scored a bit lower. The figure below shows this distribution as a histogram &
+density curve with scores on the x-axis. The relative height of each bar (or the 
+curve) represents the higher proportion of students who earned that score. 
 
 ```{r Fig01a, fig.width=6, fig.height=4, fig.cap='Figure 1A'}
 # Density + Histogram of percentage correct
@@ -115,12 +131,24 @@ Test.Pre %>%
   geom_histogram(aes(y=..density..), binwidth=0.06, alpha=0.75,
                  fill="grey") +
   geom_density() + 
+  geom_vline(xintercept=mean(df.pre$Before, na.rm=T), linetype=2) + annotate("text", x=mean(df.pre$Before, na.rm=T), y=0, label="mean", vjust=-1, hjust=0) +
   scale_x_continuous(labels=percent, limits=c(0,1)) + 
   theme_ + labs(subtitle="High School (2016)") +
-  labs(y="", title="Pre-Test Score Distribution")
+  labs(y="", x="Percent Correct", title="Pre-Test Score Distribution")
 ```
 
 ## After the camp
+
+The distribution of the camper's scores after the camp were substantially higher 
+than before, with the midpoint now hovering around the 80's (mean = 
+<code>`r percent(mean(df.post$After, na.rm=T))`</code>, median = 
+<code>`r percent(median(df.post$After, na.rm=T))`</code>; SD = 
+<code>`r percent(sd(df.post$After, na.rm=T))`</code>). This, in turn, indicates 
+that our "average" student has now answered ~80% of the questions correctly.
+
+The figure below is similar to the last figure (`Figure 1A`), but this time it has
+been constructed using the post-camp dataset. Clearly the strong right-skew 
+indicates that most of the campers improved their scores by the end of the camp.
 
 ```{r Fig01b, fig.width=6, fig.height=4, fig.cap='Figure 1B'}
 # Density + Histogram of percentage correct
@@ -131,91 +159,66 @@ Test.Post %>%
   geom_histogram(aes(y=..density..), binwidth=0.06, alpha=0.5, 
                  fill="red") +
   geom_density() + 
+  geom_vline(xintercept=mean(df.post$After, na.rm=T), linetype=2) + annotate("text", x=mean(df.post$After, na.rm=T), y=0, label="mean", vjust=-1, hjust=0) +
   scale_x_continuous(labels=percent, limits=c(0,1)) + 
   theme_ + labs(subtitle="High School (2016)") +
-  labs(y="", title="Post-Test Score Distribution")
+  labs(y="", x="Percent Correct", title="Post-Test Score Distribution")
 ```
 
-Clearly the strong right-skew indicates that most of the campers improved their
-scores by the end of the camp. This can also be represented numerically, as shown
-in the table below:
+It's important to note, this level of analysis only considers the *aggregate*
+distributions of scores, and indicates little information about how individual
+students' scores changed. In the following section, we'll look at these same data
+matched in a pairwise fashon.
 
-```{r}
-df <- full_join({Test.Post %>% 
-    group_by(SID) %>%
-    summarise(Score = sum(isCorrect)/n()) %>% 
-    mutate(Score = Score*100, Type="After")},
-{Test.Pre %>% 
-  group_by(SID) %>%
-  summarise(Score = sum(isCorrect)/n()) %>% 
-    mutate(Score = Score*100, Type="Before")
-  }) %>%
-  filter(!is.na(Score))
-```
-```{r Table1}
-df %>% group_by(Type) %>%
-  summarise(
-    mean =   round(mean(Score),2), 
-    median = round(median(Score),2), 
-    sd =     round(sd(Score), 2)) %>% kable()
-```
+# Paired Student's T-test
 
-# Hypothesis testing
+> In essence, we're concerned with **how each students' score changed** after they 
+attended our camp
 
+In order to consider how individual students' scores changed during the camp, we'll
+want to run a paired t-test. Recall that paired t-tests are simply one sample t-test
+of the *difference* of the matched samples. This is represented by the following 
+equation:
 
+$$ Score_{∆} = Score_{post} - Score_{pre} $$
+
+Running this test on our dataset (disregarding any unmatched pairs) yeilds the 
+following results:
 
 ```{r ttest, echo=T}
 # Run a paired Student's T-test (one-sided)
 t.test(Dems$After, Dems$Before, alternative = "greater", paired=T)
 ```
 
+Considering our benchmark for "improvement" is that a students' score improves 
+(meaning `After - Before > 0.00%`), this test clearly indicates that there was 
+indeed improvement. 
+
+Perhaps this is more easily shown if we consider the underlying distribution that 
+this test is testing: 
+
+```{r Fig01c, fig.cap='Figure 1C'}
+Dems %>% filter(!is.na(After), !is.na(Before)) %>% ggplot(aes(x=After-Before)) + 
+  geom_histogram(aes(y=..density..), binwidth=0.06, alpha=0.5, color="grey",
+                 fill="blue") +
+  geom_density() + 
+  scale_x_continuous(labels=percent, limits = c(-1,1), breaks = c(-1, -0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75, 1)) + 
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(y="", x="After - Before", title="∆ Score Distribution")
+```
+
+Finally, we want to consider the effect size of this relationship. To accomplish 
+this, we'll want to determine the Cohen's d ($\frac{M_{after} - M_{Before}}{Pooled Standard Deviation}$) which we find to be sufficiently large
+
 ```{r cohensd, echo=T}
 # Determine effect size (Cohen's d)
 cohen.d(Dems$After, Dems$Before, paired=T, na.rm=T)
 ```
 
-# Pre-Test Questions
 
-```{r}
+# Scores
 
-Before %>% count(QID, Response) %>% rename(Before=n) %>%
-  spread(Response, Before) %>% 
-  tibble::remove_rownames() %>%
-  select(-`<NA>`) %>% as.data.frame() %>%
-  tibble::column_to_rownames("QID") %>%
-  d3heatmap::d3heatmap(Colv=F)
-
-# Key %>% mutate(Answer = if_else(Answer==Letter, "Correct", "Incorrect"))
-
-# After %>% count(QID, Response) %>% rename(After=n)
-```
-
-```{r Fig02a, fig.cap='Figure 2A'}
-# Question Distribution (bars)
-Test.Pre %>% ggplot(aes(x=QID, fill=Score)) +
-  geom_bar(position="fill") + 
-  scale_fill_fivethirtyeight(name="") +
-  scale_y_continuous(labels=percent, name="Percentage of Responses") +
-  theme_ + labs(subtitle="High School (2016)") +
-  labs(x="", title="Question Distribution :: Pre-Test")
-```
-```{r Fig02b, fig.cap='Figure 2B'}
-## Facet by topic
-last_plot() + facet_wrap("Topic", scales="free") + 
-  labs(title="Question Distribution :: Pre-Test (Facet by Topic)")
-```
-
-
-# Pre & Post Test Scores
-
-Among our Short-term Outcomes
-**Objective:** Through content-rich questions on pre-and post-tests, 85% of
-students will demonstrate knowedge gained - thus improved academic readiness.
-**Objective:** Through content-rich questions on pre-and post-tests, 85% of
-students will demonstrate increased science knowledge and preparedness for 
-health professions.
-
-```{r Fig09, fig.width=12, fig.height=8, fig.cap='Figure 9'}
+```{r Fig02, fig.width=12, fig.height=8, fig.cap='Figure 2'}
 Dems %>% ggplot(aes(x=Edu, y=Before)) +
   geom_violin(aes(fill=Edu)) +
   geom_jitter(alpha=0.5) +
@@ -226,7 +229,7 @@ Dems %>% ggplot(aes(x=Edu, y=Before)) +
   labs(title="Pre-Test Scores by Parents Edu")
 ```
 
-```{r Fig10a, fig.width=12, fig.height=8, fig.cap='Figure 10A'}
+```{r Fig03a, fig.width=12, fig.height=8, fig.cap='Figure 3A'}
 Dems %>% mutate(delta = After - Before) %>% 
   ggplot() + geom_density(aes(x=Before), fill="grey") +
   geom_density(aes(x=After), fill="red", alpha=.5) +
@@ -236,25 +239,24 @@ Dems %>% mutate(delta = After - Before) %>%
   labs(title="Pre-Test & Post-Test Scores")
 ```
 
-```{r Fig10b, fig.width=12, fig.height=8, fig.cap='Figure 10B'}
+```{r Fig3b, fig.width=12, fig.height=8, fig.cap='Figure 3B'}
 last_plot() + facet_wrap("Edu")
 ```  
   
-```{r Fig11a, fig.width=12, fig.height=8, fig.cap='Figure 11a'}
+```{r Fig4a, fig.width=12, fig.height=8, fig.cap='Figure 4A'}
 Dems %>% 
   filter(!is.na(Edu), !is.na(GradeLvl)) %>%
   ggplot(aes(x=Edu, y=Before, color=Edu, linetype=Gender)) +
-  geom_curve(aes(y=Before, yend=After, xend=Edu), position="jitter",
+  geom_curve(aes(y=Before, yend=After, xend=Edu), #position="jitter",
               curvature = -0.1, arrow = arrow(length = unit(0.3,"cm"))) +
   scale_y_continuous(labels=percent) + coord_flip() +
-  guides(color=F) +#guide_legend(nrow=2)) +
-  # scale_color_brewer(name="Parent's Education", palette = "Spectral") +
+  guides(color=F) +
   theme_ + labs(subtitle="High School (2016)") +
   labs(title="∆ Test Scores by Parents Educational Attainment")   
 ```
 
-```{r Fig11b, fig.width=12, fig.height=8, fig.cap='Figure 11B'}
-last_plot() + facet_grid(GradeLvl~Race)
+```{r Fig4b, fig.width=12, fig.height=16, fig.cap='Figure 4B'}
+last_plot() + facet_grid(Race~.)
 # Dems %>% 
 #   filter(!is.na(Edu)) %>%
 #   ggplot(aes(x=Race, y=Score, color=Edu)) +
@@ -267,6 +269,85 @@ last_plot() + facet_grid(GradeLvl~Race)
 #   labs(title="∆ Test Scores by Parents Educational Attainment")   +
 #   facet_grid(GradeLvl ~ Race)
 ```
+
+# Questions
+
+```{r, eval=F}
+Test.Post %>% select(SID, QID, isCorrect) %>%
+  mutate(isCorrect=as.numeric(isCorrect)) %>% 
+  spread(QID, isCorrect) %>% select(-Q06) %>%
+  tibble::remove_rownames() %>% tibble::column_to_rownames("SID") %>%
+  pvclust::pvclust(method.hclust="ward.D2")%>% #pvclust::pvrect(alpha=.95) %>% 
+  plot() 
+
+# Before %>% count(QID, Response) %>% rename(Before=n) %>%
+#   spread(Response, Before) %>% 
+#   tibble::remove_rownames() %>%
+#   select(-`<NA>`) %>% as.data.frame() %>%
+#   tibble::column_to_rownames("QID") %>%
+#   d3heatmap::d3heatmap(Colv=F)
+```
+
+## Pre-Test
+
+```{r Fig05a, fig.cap='Figure 5A'}
+# Question Distribution (bars)
+Test.Pre %>% ggplot(aes(x=QID, fill=Score)) +
+  geom_bar(position="fill") + 
+  scale_fill_fivethirtyeight(name="") +
+  scale_y_continuous(labels=percent, name="Percentage of Responses") +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(x="", title="Pre-Test Question Distribution")
+```
+```{r Fig05b, fig.cap='Figure 5B'}
+## Facet by topic
+last_plot() + facet_wrap("Topic", scales="free") + 
+  labs(title="Pre-Test Question Distribution (Facet by Topic)")
+```
+
+## Post-Test
+
+```{r Fig06a, fig.cap='Figure 6A'}
+# Question Distribution (bars)
+Test.Post %>% ggplot(aes(x=QID, fill=Score)) +
+  geom_bar(position="fill") + 
+  scale_fill_fivethirtyeight(name="") +
+  scale_y_continuous(labels=percent, name="Percentage of Responses") +
+  theme_ + labs(subtitle="High School (2016)") +
+  labs(x="", title="Post-Test Question Distribution")
+```
+```{r Fig06b, fig.cap='Figure 6B'}
+## Facet by topic
+last_plot() + facet_wrap("Topic", scales="free") + 
+  labs(title="Post-Test Question Distribution (Facet by Topic)")
+```
+
+## Breakdown by topic
+
+```{r}
+Key %>% mutate(Choice = str_c(if_else(Answer==Letter, "✓", "✘"), "  ", Choice)) %>% arrange(Topic, QID) %>% 
+  select(-Answer, -Question, -Topic) %>% filter(QID!="Q08") %>%
+  # Before
+  left_join({Test.Pre %>% count(QID, Response) %>% 
+      mutate(n = scales::percent(n/sum(n, na.rm=T))) %>% rename(Before=n)}, 
+      by = c("QID", "Letter"="Response")) %>%
+  # After
+  left_join({Test.Post %>% count(QID, Response) %>% 
+      mutate(n = scales::percent(n/sum(n, na.rm=T))) %>% rename(After=n)}, 
+      by = c("QID", "Letter"="Response")) %>%
+ 
+   htmlTable(align = "lclrr", rnames=F, 
+             css.tspanner="font-weight: 900; text-align: center; font-variant: small-caps; font-size: larger; color: #dd4814;",
+             css.rgroup = "font-variant: small-caps; color: #2d6987;",
+             col.rgroup = c("none", "#F7F7F7"), col.columns = c("#CCC", "none", "white", "grey", "#df382c"),
+            tspanner = c("Cardiopulmonary", "Infectious Disease", "Microbiology", "Neuroscience", "Pharmacy"), n.tspanner = c(16, 24, 22, 12, 8),
+            rgroup = c("Alveolar surface tension in the lung is used to describe which of the following?", "The newborn lung is made up of millions of alveoli (tiny air sacs). What chemical helps to allow the alveoli to expand during breathing", "Large arteries in the body have the capacity to sustain pressure during diastole because of", "How many valves and chambers are in the human heart", "Factors that lead to bacteria becoming resistant to antibiotics are:", "In order to decrease the incidence of antibiotic resistant bacteria", "Zika virus is an emerging infection with the following characteristic", "Ebola virus is a very virulent virus which causes severe infection in humans. The following statements are true regarding Ebola except the following:", "Dengue is an infectious disease caused by the flavivius dengue. The following statement(s) are true about Dengue", "The bacteria that Selman Waksman originally identified as a source of antibiotics are members of the genus:", "The goal of streaking for isolation is to:", "About 1mL of juice from raw chicken containing 1X106 CFU/mL Salmonella was cleaned using a bleach agent that claims to kill 99.9% of bacteria. Assuming the bleach agent was used properly, how many bacteria are still alive on the counter top?", "The correct shape of a zone of inhibition in a Kirby-Bauer disc assay should be:", "Imagine that your eyes are closed and someone is touching your arm.  What is the name for the cells in your skin that detect this touch and create a message to send to your brain about this sensation?", "In what way can a neuron signal that a touch is occurring with the same amount of pressure but lasting for a longer time?", "What mechanisms produce an action potential in a neuron?", "What degree do pharmacists earn in the US?", "Pharmacists can add flavors to the medicine they compound", "Over-the-counter medications take the same amount of time to work, regardless of dosage form"), 
+    n.rgroup = c(4, 4, 4, 4, 5, 4, 5, 5, 5, 6, 6, 5, 5, 4, 4, 4, 4, 2, 2))
+```
+
+
+
+
 # License
 
 ```
