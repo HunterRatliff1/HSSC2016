@@ -38,11 +38,10 @@ rsconnect/
 # Mac data
 .DS_Store
 
-# HTML
+# HTML, png, pdf
 *.html
-
-# png
 *.png
+*.pdf
 
 # icons
 Icon
