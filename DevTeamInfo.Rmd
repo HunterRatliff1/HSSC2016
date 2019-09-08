@@ -1,0 +1,463 @@
+---
+title: "Summary for Dev Team"
+author: "Hunter Ratliff, @HunterRatliff1"
+date: "September 6, 2016"
+output: 
+  html_document:
+    theme: united
+    highlight: zenburn
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+---
+<hr>
+**Author:** @[HunterRatliff1](https://twitter.com/HunterRatliff1)<br>
+**Published to:** [TBD]()<br>
+**Source Code:** Available on [Github](https://github.com/HunterRatliff1/)
+
++ Repo: [HunterRatliff1/HSSC2016](https://github.com/HunterRatliff1/HSSC2016)
++ File: [TBD](TBD)
+<hr>
+
+```{r global_options, include=FALSE}
+require(knitr)
+
+## Sets output for figures
+knitr::opts_chunk$set(fig.width=8, fig.height=6, fig.path='DevTeamInfo/',
+                      echo=FALSE, warning=FALSE, message=FALSE, fig.align='center')
+```
+
+
+```{r load_data}
+require(effsize)
+
+require(dplyr)
+require(tidyr)
+require(stringr)
+require(ggplot2)
+
+require(formattable)
+require(htmlTable)
+
+# Import data.frames
+require(rio)
+MS <- full_join(
+  import("Data/MS/Pre/Survey.csv"),  import("Data/MS/Post/Survey.csv")) %>%
+  tbl_df()
+HS <- full_join(
+  import("Data/HS/Pre/Survey.csv"),  import("Data/HS/Post/Survey.csv")) %>%
+  tbl_df()
+
+# Define custom themes
+require(ggthemes)
+require(scales)
+theme_ <- theme_fivethirtyeight() + theme(axis.title=element_text(), strip.background=element_rect(fill="#DDDDDD")) 
+
+# Define custom functions
+source("Scripts/ParseCSV.R")
+source("Scripts/venn_tooltip.R")
+getOpts <- function(source.df, col_name) {
+  require(dplyr); require(stringr);
+  
+  source.df[col_name] %>% unlist() %>% 
+    str_split(", ") %>% unlist() %>% unique() %>% 
+    na.omit() %>% as.character()
+}
+
+edu.levels <- c("None",
+  "Primary Education only", "Some high school",
+  "High school graduate", "Some college",
+  "Associate degree", "Bachelor’s degree",
+  "Post graduate degree", "Doctoral degree")
+```
+
+# Count data
+
+## Gender & EO
+
+```{r Fig01a}
+HS %>% mutate(EO = EO.mom + EO.dad) %>%
+  mutate(Gender = str_replace(Gender, 
+                              "I'd prefer not answer", "No answer")) %>%
+  ggplot(aes(x=EO, fill=Gender)) + geom_histogram(binwidth=1, color="black") +
+  scale_fill_economist() + theme_ + 
+  labs(title="Histograms of EO Levels", subtitle="HS camp (2016)")
+```
+
+
+```{r Fig01b}
+MS %>% mutate(EO = EO.mom + EO.dad) %>%
+  ggplot(aes(x=EO, fill=Gender)) + geom_histogram(binwidth=1, color="black") +
+  scale_fill_economist() + theme_ + 
+  labs(title="Histograms of EO Levels", subtitle="MS camp (2016)")
+```
+
+## Parents Education & EO
+
+```{r Fig02a}
+HS %>%
+  mutate(EO = if_else(EO.mom >= EO.dad, EO.mom, EO.dad)) %>%
+  mutate(Edu = if_else(Edu.mom >= Edu.dad, Edu.mom, Edu.dad)) %>%
+  group_by(EO, Edu) %>%
+  summarise(n = n()) %>% 
+  mutate(Edu = factor(Edu, levels=edu.levels, ordered=T)) %>%
+  ggplot(aes(x=Edu, y=n, fill=EO)) +
+  geom_bar(stat="identity", color="black") +
+  coord_flip() + theme_ + 
+  scale_fill_continuous_tableau(name="EO Level", 
+                                palette="Area Green") +
+  labs(title="Parents Education & EO levels", 
+       subtitle="HS camp (2016)",
+       x="Max(Parent's Education Level)", y="Number of Students")
+  
+```
+
+```{r Fig02b}
+MS %>%
+  mutate(EO = if_else(EO.mom >= EO.dad, EO.mom, EO.dad)) %>%
+  mutate(Edu = if_else(Edu.mom >= Edu.dad, Edu.mom, Edu.dad)) %>%
+  # select(UID, Edu.mom, Edu.dad, Edu, EO) %>% View()
+  group_by(EO, Edu) %>%
+  summarise(n = n()) %>% 
+  mutate(Edu = factor(Edu, levels=edu.levels, ordered=T)) %>%
+  ggplot(aes(x=Edu, y=n, fill=EO)) +
+  geom_bar(stat="identity", color="black") +
+  coord_flip() + theme_ + 
+  scale_fill_continuous_tableau(name="EO Level", 
+                                palette="Area Green") +
+  labs(title="Parents Education & EO levels", 
+       subtitle="MS camp (2016)",
+       x="Max(Parent's Education Level)", y="Number of Students")
+  
+```
+
+High School:
+
+```{r Table01a}
+HS %>%
+  # mutate(EO = if_else(EO.mom >= EO.dad, EO.mom, EO.dad)) %>%
+  mutate(Edu = if_else(Edu.mom >= Edu.dad, Edu.mom, Edu.dad)) %>%
+  group_by(Edu) %>%
+  summarise(n = n()) %>% 
+  mutate(Edu = factor(Edu, levels=edu.levels, ordered=T))  %>%
+  arrange(Edu) %>% 
+  mutate(`Percent total` = n/sum(n)) %>% ungroup()%>%
+  mutate(`cumulative dist`= order_by(Edu, cumsum(n))) %>%
+  mutate(`cumulative dist`= formattable::percent(
+    `cumulative dist`/sum(n))) %>%
+  mutate(`Percent total` = percent(`Percent total`)) %>%
+  formattable(list(
+    n=normalize_bar(), 
+    `cumulative dist`=normalize_bar("#e98866", 0.2)
+  ))
+```
+
+Middle School:
+
+```{r Table01b}
+MS %>%
+  # mutate(EO = if_else(EO.mom >= EO.dad, EO.mom, EO.dad)) %>%
+  mutate(Edu = if_else(Edu.mom >= Edu.dad, Edu.mom, Edu.dad)) %>%
+  group_by(Edu) %>%
+  summarise(n = n()) %>% 
+  mutate(Edu = factor(Edu, levels=edu.levels, ordered=T))  %>%
+  arrange(Edu) %>% 
+  mutate(`Percent total` = n/sum(n)) %>% ungroup()%>%
+  mutate(`cumulative dist`= order_by(Edu, cumsum(n))) %>%
+  mutate(`cumulative dist`= formattable::percent(
+    `cumulative dist`/sum(n))) %>%
+  mutate(`Percent total` = percent(`Percent total`)) %>%
+  formattable(list(
+    n=normalize_bar(), 
+    `cumulative dist`=normalize_bar("#e98866", 0.2)
+  ))
+```
+
+## Race
+
+
+High School
+
+```{r Venn01a}
+require(d3vennR)
+venn_tooltip(d3vennR(
+  data = list(
+    list(sets = list(0), label = 'White', size = 27),
+    list(sets = list(1), label = 'Hispanic', size= 42),
+    list(sets = list(2), label = 'Black', size = 11),
+    list(sets = list(3), label = 'N/A', size=10),
+    list(sets = list(4), label = 'Asain', size = 14),
+    list(sets = list(5), label = 'Other', size= 4),
+    list(sets = list(6), label = 'Am. Indian', size= 4),
+    list(sets = c(0,1), size=5),
+    list(sets = c(0,2), size=2),
+    list(sets = c(0,3), size=0),
+    list(sets = c(0,4), size=1),
+    list(sets = c(0,5), size=0),
+    list(sets = c(0,6), size=2),
+    
+    list(sets = c(1,2), size=3),
+    list(sets = c(1,3), size=0),
+    list(sets = c(1,4), size=1),
+    list(sets = c(1,5), size=0),
+    list(sets = c(1,6), size=3),
+    
+    list(sets = c(2,3), size=0),
+    list(sets = c(2,4), size=0),
+    list(sets = c(2,5), size=0),
+    list(sets = c(2,6), size=2),
+    
+    list(sets = c(3,4), size=0),
+    list(sets = c(3,5), size=0),
+    list(sets = c(3,6), size=0),
+    
+    list(sets = c(4,5), size=0),
+    list(sets = c(4,6), size=0),
+    
+    list(sets = c(5,6), size=0),
+    # list(sets = c(1,2,5), size=1),
+    list(sets = c(0,1,2,6), size=1),
+    list(sets = c(1,2,6), size=1)
+  )
+))
+```
+
+Middle School
+
+```{r Venn01b}
+require(d3vennR)
+venn_tooltip(d3vennR(
+  data = list(
+    list(sets = list(0), label = 'White', size = 36),
+    list(sets = list(1), label = 'Hispanic', size= 29),
+    list(sets = list(2), label = 'Black', size = 19),
+    list(sets = list(3), label = 'N/A', size=10),
+    list(sets = list(4), label = 'Asain', size = 9),
+    list(sets = list(5), label = 'Other', size= 10),
+    list(sets = c(0,1), size=3),
+    list(sets = c(0,2), size=1),
+    list(sets = c(0,3), size=0),
+    list(sets = c(0,4), size=2),
+    list(sets = c(0,5), size=0),
+    
+    list(sets = c(1,2), size=2),
+    list(sets = c(1,3), size=0),
+    list(sets = c(1,4), size=0),
+    list(sets = c(1,5), size=2),
+    
+    list(sets = c(2,3), size=0),
+    list(sets = c(2,4), size=0),
+    list(sets = c(2,5), size=1),
+    
+    list(sets = c(3,4), size=0),
+    list(sets = c(3,5), size=0),
+    
+    list(sets = c(4,5), size=1),
+    list(sets = c(1,2,5), size=1)
+  )
+))
+```
+
+
+# Test Scores
+
+```{r Fig03a}
+HS %>% ggplot(color="black") + 
+  geom_density(aes(x=Score0, fill="Before"), alpha=.5) +
+  geom_density(aes(x=Score, fill="After"), alpha=.5) +
+  theme_ + scale_x_continuous(labels=percent) +
+  scale_fill_hc(name="") +
+  labs(title="Before & After Test Scores", 
+       subtitle="HS camp (2016)",
+       x="Score", y="")
+```
+
+```{r Fig03b}
+MS %>% ggplot(color="black") + 
+  geom_density(aes(x=Score0, fill="Before"), alpha=.5) +
+  geom_density(aes(x=Score, fill="After"), alpha=.5) +
+  theme_ + scale_x_continuous(labels=percent) +
+  scale_fill_hc(name="") +
+  labs(title="Before & After Test Scores", 
+       subtitle="MS camp (2016)",
+       x="Score", y="")
+```
+
+# Demographics
+
+## Racial Identification
+
+```{r Fig04a}
+bind_rows(
+  mutate(select(HS, Gender, Race), Camp="High School"),
+  mutate(select(MS, Gender, Race), Camp="Middle School")) %>%
+  
+  mutate(Race = if_else(str_detect(Race, ","), "2+ Races", Race)) %>%
+  mutate(Race = if_else(str_detect(Race, "NHoPI"), "Other", Race)) %>%
+  mutate(Race = if_else(str_detect(Race, "Middle Eastern"), "Other", Race)) %>%
+  mutate(Race = if_else(str_detect(Race, "AmIndAN"), "Other", Race)) %>%
+  mutate(Race = if_else(is.na(Race), "No response", Race)) %>%
+  
+  ggplot(aes(fill=Race)) + geom_bar(aes(x=""), position = "fill") + 
+  theme_ + theme(panel.grid=element_blank(), axis.text=element_blank()) + 
+  scale_fill_stata() + coord_polar(theta="y") +
+  labs(title="Demographics", 
+       subtitle="Health Sciences Summer Camp (2016)",
+       x="", y="")
+```
+
+```{r Fig04b}
+last_plot() + facet_wrap("Camp") 
+```
+
+
+## Gender
+
+```{r Fig05a}
+bind_rows(
+  mutate(select(HS, Gender, Race), Camp="High School"),
+  mutate(select(MS, Gender, Race), Camp="Middle School")) %>%
+  
+  mutate(Gender = if_else(is.na(Gender), "No response", Gender)) %>%
+  
+  ggplot(aes(fill=Gender)) + geom_bar(aes(x=""), position = "fill") + 
+  theme_ + theme(panel.grid=element_blank(), axis.text=element_blank()) + 
+  scale_fill_tableau() + coord_polar(theta="y") +
+  labs(title="Demographics", 
+       subtitle="Health Sciences Summer Camp (2016)",
+       x="", y="")
+```
+
+```{r Fig05b}
+last_plot() + facet_wrap("Camp") 
+```
+
+## Table
+
+```{r Table02}
+bind_rows(
+  mutate(select(HS, Gender, Race), Camp="High School"),
+  mutate(select(MS, Gender, Race), Camp="Middle School")) %>%
+  
+  mutate(Race = if_else(str_detect(Race, ","), "2+ Races", Race)) %>%
+  mutate(Race = if_else(str_detect(Race, "NHoPI"), "Other", Race)) %>%
+  mutate(Race = if_else(str_detect(Race, "Middle Eastern"), "Other", Race)) %>%
+  mutate(Race = if_else(str_detect(Race, "AmIndAN"), "Other", Race)) %>%
+  mutate(Race = if_else(is.na(Race), "No response", Race)) %>%
+  mutate(Gender = if_else(is.na(Gender), "No response", Gender)) %>%
+  
+  count(Race, Gender, sort=T) %>%
+  # reshape2::dcast(Race ~ Gender + Camp) %>%
+  spread(Gender, n, fill=0) %>%
+  knitr::kable()
+#   htmlTable(
+#           header =  paste(c("1st", "2nd",
+#                             "3rd", "4th"), "header"),
+#           rnames = paste(c("1st", "2nd",
+#                            "3rd", "4th"), "row"),
+#           rgroup = c("Group A",
+#                      "Group B"),
+#           n.rgroup = c(2,2),
+#           cgroup = c("Cgroup 1", "Cgroup 2&dagger;"),
+#           n.cgroup = c(2,2), 
+#           caption="Basic table with both column spanners (groups) and row groups",
+#           tfoot="&dagger; A table footer commment")
+```
+
+# Scores by Demographic
+
+```{r Fig06}
+bind_rows(
+  mutate(select(HS, Gender, Race, Score0, Score), Camp="High School"),
+  mutate(select(MS, Gender, Race, Score0, Score), Camp="Middle School")) %>%
+  
+  mutate(Race = if_else(str_detect(Race, ","), "2+ Races", Race)) %>%
+  mutate(Race = if_else(str_detect(Race, "NHoPI"), "Other", Race)) %>%
+  mutate(Race = if_else(str_detect(Race, "Middle Eastern"), "Other", Race)) %>%
+  mutate(Race = if_else(str_detect(Race, "AmIndAN"), "Other", Race)) %>%
+  mutate(Race = if_else(is.na(Race), "No response", Race)) %>%
+  
+  ggplot(aes(x=Race, fill=Race, y=Score-Score0)) + geom_boxplot() + 
+  theme_ + scale_y_continuous(labels=percent) +
+  scale_fill_stata() + coord_flip() +
+  labs(title="Size of Score Improvement", 
+       subtitle="Health Sciences Summer Camp (2016)",
+       x="", y="Improvement\n(post-test - pre-test)")
+
+last_plot() + facet_wrap("Camp") 
+```
+
+```{r}
+df <- bind_rows(
+  mutate(select(HS, Gender, Race, Score0, Score), Camp="High School"),
+  mutate(select(MS, Gender, Race, Score0, Score), Camp="Middle School")) %>%
+  
+  mutate(Gender = if_else(is.na(Gender), "No response", Gender)) %>%
+  mutate(Race = if_else(str_detect(Race, ","), "2+ Races", Race)) %>%
+  mutate(Race = if_else(str_detect(Race, "NHoPI"), "Other", Race)) %>%
+  mutate(Race = if_else(str_detect(Race, "Middle Eastern"), "Other", Race)) %>%
+  mutate(Race = if_else(str_detect(Race, "AmIndAN"), "Other", Race)) %>%
+  mutate(Race = if_else(is.na(Race), "No response", Race)) 
+  
+t.test(HS$Score, HS$Score0, alternative = "greater", paired=T)  
+t.test(MS$Score, MS$Score0, alternative = "greater", paired=T)  
+t.test(df$Score, df$Score0, alternative = "greater", paired=T)  
+
+df %>%
+  # gather(Test, Score, Score0, Score) %>% 
+  # mutate(Test = str_replace(Test, "Score0", "Before")) %>%
+  # mutate(Test = str_replace(Test, "Score", "After")) %>%
+  group_by(Camp) %>%
+  summarise(
+    u0 = mean(Score0, na.rm=T),
+    sd0 = sd(Score0, na.rm=T),
+    u = mean(Score, na.rm=T),
+    sd = sd(Score, na.rm=T)
+  ) %>%
+  mutate(Before = paste(percent(u0), "+/-", percent(sd0)),
+         After  = paste(percent(u), "+/-", percent(sd))) %>%
+  select(Camp, Before, After) %>% knitr::kable()
+  
+  
+  
+#   ggplot(aes(x=Race, fill=Gender, y=mean(Score, na.rm=T))) + geom_bar(stat="identity", position="dodge") + 
+#   theme_ + scale_y_continuous(labels=percent) +
+#   scale_fill_tableau() + coord_flip() +
+#   labs(title="Size of Score Improvement", 
+#        subtitle="Health Sciences Summer Camp (2016)",
+#        x="", y="Improvement\n(post-test - pre-test)")
+# 
+# last_plot() + facet_wrap("Camp") 
+```
+
+
+# License
+
+```
+--- LICENSE ---
+
+Copyright (C) 2016 Hunter Ratliff
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+```
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+In the spirit of [Reproducible Research](https://cran.r-project.org/web/views/ReproducibleResearch.html),
+below is the information About the R Session at the time it was compiled:
+
+```{r Session_info, echo=TRUE, collapse=TRUE}
+devtools::session_info()
+```
