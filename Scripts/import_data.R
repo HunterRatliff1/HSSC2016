@@ -11,15 +11,15 @@ require(rio)
 ################################################################################
 
 ## ~~~ Download the key for the HS Pre-Test ~~~
-Key <- gs_title("HS Responses ('16)") %>% gs_read_csv("HS_Test Key")
-Key %>% select(QID, Answer, Question, A:`F`) %>%
+Key <- gs_title("HS Responses ('16)") %>% gs_read_csv("HS_Test Key") %>% 
+  select(QID, Answer, Question, A:`F`) %>%
   gather(Letter, Choice, A:`F`) %>% filter(!is.na(Choice)) %>%
   mutate(
     Topic = str_extract(QID, "\\[..\\]"),
     Topic = str_replace_all(Topic, "\\[|\\]", ""),
     QID  = str_replace(QID, " \\[..\\]", "")) %>%
   select(QID, Topic, Answer, Letter, Choice, Question)
-
+Key %>% export("HS/Data/Tests/Key.csv")
 
 
 ## ~~~ Download the HS Pre-Test and score it ~~~
@@ -54,21 +54,23 @@ gs_title("HS Responses ('16)") %>% gs_read_csv("HS_Test-Post") %>%
   gather(QID, Response, -SID) %>%
   filter(QID!="Q08 [NS] DONT ANSWER") %>% # filter out duplicate
   
-  # Join with the answer key, and preform scoring
-  left_join(select(Key, QID, Answer)) %>%
-  mutate(isCorrect = if_else(Response==Answer, T, F)) %>%
-  mutate(Score     = if_else(Response==Answer, "Correct", "Wrong")) %>%
-  
   # Seperate out the question topics
   mutate(
     Topic = str_extract(QID, "\\[..\\]"),
     Topic = str_replace_all(Topic, "\\[|\\]", ""),
     QID  = str_replace(QID, " \\[..\\]", "")) %>%
+  
+  # Join with the answer key, and preform scoring
+  left_join(select(Key, QID, Answer)) %>%
+  mutate(isCorrect = if_else(Response==Answer, T, F)) %>%
+  mutate(Score     = if_else(Response==Answer, "Correct", "Wrong")) %>%
+  
+  
   left_join(
     data_frame(
       Topic = c("CP", "ID", "MB", "NS", "PH"),
       TopicFull = c("Cardiopulmonary", "Infectious Disease",
-                    "Microbiology", "Neuroscience", "Pharmacy"))) %>% 
+                    "Microbiology", "Neuroscience", "Pharmacy"))) %>% unique() %>%
   rename(Topic.Abbv=Topic, Topic=TopicFull) %>% export("HS/Data/Post/Test.csv")
 
 
@@ -76,13 +78,11 @@ gs_title("HS Responses ('16)") %>% gs_read_csv("HS_Test-Post") %>%
 
 
 
-
-
 ## ~~~ Download the short answer data from HS Pre-Survey ~~~
-gs_title("HS Responses ('16)") %>% 
-  gs_read_csv("HS_Info-Pre") %>%
+gs_title("MS Responses ('16)") %>% 
+  gs_read_csv("Info-Pre") %>%
   select(SID, Q1:Q3, Q10, Q6a, Q6b) %>%
-  export("HS/Data/Pre/Written.csv")
+  export("MS/Data/Pre/Written.csv")
 
 ## ~~~ Download the AP data from HS Pre-Survey ~~~
 gs_title("HS Responses ('16)") %>% 
@@ -234,3 +234,12 @@ gs_title("HS Responses ('16)") %>%
 gs_title("HS Responses ('16)") %>% gs_read_csv("HighSchools") %>% 
   select(School, District) %>% right_join(import("HS/Data/Pre/Survey.RDS")) %>%
   export("HS/Data/Pre/Survey.RDS")
+
+
+gs_title("HS Responses ('16)") %>% gs_read_csv("HS_Info-Post") %>% 
+  select(SID=`Camper ID`, starts_with("Q")) %>%
+  select(SID, Q12:Q17, Q10a, Q10b) %>% 
+  rename(Prepared=Q12, Knowledge=Q13, Likely=Q14, Relevance=Q15, Recommend=Q16) %>%
+  full_join(Dems) %>% 
+  rename(Likely0=Q8, Prepared0=Q11, Knowledge0=Q12) %>%
+  export("HS/Data/Quan.RDS")

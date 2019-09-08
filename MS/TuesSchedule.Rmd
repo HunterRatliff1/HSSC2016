@@ -1,0 +1,67 @@
+---
+title: "Tuesday Schedule (MS)"
+author: "Hunter Ratliff, @HunterRatliff1"
+date: "August 9, 2016"
+output: 
+  html_document:
+    theme: united
+    highlight: zenburn
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    code_folding: show
+---
+
+# Tuesday
+
+```{r, echo=F, warning=F, message=F}
+require(timevis)
+require(dplyr)
+require(tidyr)
+
+# require(googlesheets)
+# require(lubridate)
+# gs_title("Meh") %>% gs_read_csv("Tues") %>% 
+#   filter(!is.na(Include)) %>% 
+#   mutate(start=ymd_hms(start), end=ymd_hms(end), type="range") %>%
+#   mutate(Event = stringr::str_c(Event, " [", Location, "]")) %>%
+#   rename(content=Event, title=Location) %>% export("MS/Schedules/Tues.RDS")
+# gs_title("Meh") %>% gs_read_csv("GroupCSS") %>%
+#   export("MS/Schedules/GroupCSS.RDS")
+
+rio::import("Schedules/Tues.RDS") %>%
+  timevis(options = list(orientation.axis="both", stack=F),
+    groups = rio::import("Schedules/GroupCSS.RDS"), zoomFactor=3)
+```
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+# License
+
+```
+--- LICENSE ---
+
+Copyright (C) 2016 Hunter Ratliff
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+```
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+In the spirit of [Reproducible Research](https://cran.r-project.org/web/views/ReproducibleResearch.html),
+below is the information About the R Session at the time it was compiled:
+
+```{r Session_info, echo=TRUE, collapse=TRUE}
+devtools::session_info()
+```
